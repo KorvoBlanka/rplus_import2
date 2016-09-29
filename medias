@@ -1,0 +1,57 @@
+{
+  media_list => {
+
+  ###### - avito - start
+
+    avito => {
+      msk => {
+        site_url => 'http://www.avito.ru',
+        host => 'www.avito.ru',
+        page_count => 1,
+        pause_category => 60,
+        pause_item => 2,
+
+        source_list => [
+          {url => '/moskva/kvartiry/prodam'},
+          {url => '/moskva/komnaty/prodam'},
+          {url => '/moskva/doma_dachi_kottedzhi/prodam'},
+          {url => '/moskva/zemelnye_uchastki/prodam'},
+          {url => '/moskva/kommercheskaya_nedvizhimost/prodam'},
+
+          {url => '/moskva/kvartiry/sdam'},
+          {url => '/moskva/komnaty/sdam'},
+          {url => '/moskva/doma_dachi_kottedzhi/sdam'},
+          {url => '/moskva/zemelnye_uchastki/sdam'},
+          {url => '/moskva/kommercheskaya_nedvizhimost/sdam'},
+        ],
+      },
+      khv => {
+        site_url => 'http://www.avito.ru',
+        host => 'www.avito.ru',
+        page_count => 1,
+        pause_category => 120,
+        pause_item => 20,
+
+        source_list => [
+          {url => '/habarovsk/kvartiry/prodam'},
+          {url => '/habarovsk/komnaty/prodam'},
+          {url => '/habarovsk/doma_dachi_kottedzhi/prodam'},
+          {url => '/habarovsk/zemelnye_uchastki/prodam'},
+          {url => '/habarovsk/kommercheskaya_nedvizhimost/prodam'},
+
+          {url => '/habarovsk/kvartiry/sdam'},
+          {url => '/habarovsk/komnaty/sdam'},
+          {url => '/habarovsk/doma_dachi_kottedzhi/sdam'},
+          {url => '/habarovsk/zemelnye_uchastki/sdam'},
+          {url => '/habarovsk/kommercheskaya_nedvizhimost/sdam'},
+        ],
+      }
+    },
+  ###### - avito - end
+
+  ###### - irrru - start
+    irrru => {
+
+    }
+  }
+}
