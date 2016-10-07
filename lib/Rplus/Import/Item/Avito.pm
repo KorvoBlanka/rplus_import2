@@ -1,7 +1,6 @@
 package Rplus::Import::Item::Avito;
 
 use DateTime::Format::Strptime;
-
 use Mojo::Util qw(trim);
 
 use Rplus::Model::Result;
@@ -15,9 +14,12 @@ use Rplus::Util::PhoneNum qw(refine_phonenum);
 use JSON;
 use Data::Dumper;
 
+no warnings 'experimental';
+
+
 my $media_name = 'avito';
 my $media_data;
-my $parser = DateTime::Format::Strptime->new(pattern => '%Y-%m-%d %H:%M:%S');
+my $parser = DateTime::Format::Strptime->new(pattern => '%Y-%m-%d %H:%M');
 my $ua;
 
 my $META = {
@@ -109,11 +111,10 @@ my $META = {
 sub get_item {
     my ($location, $item_url) = @_;
 
-    say 'loading';
+    say 'loading ' . $media_name . ' - ' . $location . ' - ' . $item_url;
     my $data = _get_item($location, $item_url);
     say Dumper $data;
 
-    say 'saving';
     my $realty = Rplus::Model::Result->new(metadata => to_json($data), media => $media_name, location => $location)->save;
     say 'saved ' . $realty->id;
 }
@@ -121,15 +122,12 @@ sub get_item {
 sub _get_item {
     my ($location, $item_url) = @_;
 
-    my $media = Rplus::Class::Media->instance();
-    $media_data = $media->get_media($media_name, $location);
-
-    my $interface = Rplus::Class::Interface->instance();
-    $ua = Rplus::Class::UserAgent->new($interface->get_interface());
+    $media_data = Rplus::Class::Media->instance()->get_media($media_name, $location);;
+    $ua = Rplus::Class::UserAgent->new(Rplus::Class::Interface->instance()->get_interface());
 
     my $data = {
         source_media => $media_name,
-        source_url => '',
+        source_url => $media_data->{site_url} . $item_url,
         type_code => 'other',
         offer_type_code => 'sale',
         add_date => ''
@@ -144,7 +142,6 @@ sub parse_adv {
     my ($data, $item_url) = @_;
 
     my $source_url = $media_data->{site_url} . $item_url;
-    $data->{source_url} = $source_url;
 
     my $res = $ua->get_res($source_url, [
         Host => $media_data->{host},
@@ -152,10 +149,15 @@ sub parse_adv {
     ]);
     my $dom = $res->dom;
 
-    say Dumper $dom;
-
     my $item_id = $dom->at('span[id="item_id"]')->text;
-    say $item_id;
+
+    # дата
+    my $date_str = trim($dom->at('div[class="item-subtitle"]')->text);
+    if ($date_str =~ /размещено (.+)\. объявление/i) {
+        say $1;
+        my $dt = _parse_date($1);
+        $data->{add_date} = $dt->datetime();
+    }
 
     # тип недвижимости и тип предложения
     my $params = lc($dom->find('div[class~="item-params"]')->first->all_text);
@@ -230,7 +232,6 @@ sub parse_adv {
         }
         when ('apartment') {
             my @bp = map {trim $_} grep { $_ && length($_) > 1 } split /[,()]/, $main_title;
-            say Dumper \@bp;
             # d-к квратира.
             if ($bp[0] =~ /^(\d{1,}).*?$/) {
                 $data->{'rooms_count'} = $1;
@@ -334,16 +335,6 @@ sub parse_adv {
         $data->{address} = $dom->find('span[itemprop="streetAddress"]')->first->all_text;
     }
 
-    # вытащим фото
-    my @photos;
-    $dom->find('meta[property="og:image"]')->each (sub {
-        unless ($_->{content} =~ /logo/) {
-            my $img_url = $_->{content};
-            push @photos, $img_url;
-        }
-    });
-    $data->{photo_url} = \@photos;
-
     my @owner_phones;
     my $item_phone = '';
     my $pkey = '';
@@ -354,6 +345,8 @@ sub parse_adv {
     });
 
     $pkey = _phone_demixer($item_id * 1, $item_phone);
+
+    sleep $media_data->{pause_item};
 
     my $m_url = 'https://m.avito.ru' . $item_url;
 
@@ -371,23 +364,31 @@ sub parse_adv {
     if ($mr && $mr->json) {
          my $phone_str = $mr->json->{phone};
         for my $x (split /[.,;:]/, $phone_str) {
-            say $x;
             if (my $phone_num = refine_phonenum($x)) {
                 push @owner_phones, $phone_num;
-                say $phone_num;
             }
         }
     }
     $data->{'owner_phones'} = \@owner_phones;
 
-    say 'seller: ' . $dom->find('div[class="description_seller"]')->first->text;
     if ($dom->find('div[class="description_seller"]')->first->text =~ /Агентство/i ) {   # агенство?
         my $seller = $dom->find('div[id="seller"] strong[itemprop="name"]')->first->all_text;
-        say 'company: ' . $seller;
         if ($seller !~ /Частное лицо/) {
             $data->{mediator_company} = $seller;
         }
     }
+
+    # вытащим фото
+    my @photos;
+    $dom->find('meta[property="og:image"]')->each (sub {
+        unless ($_->{content} =~ /logo/) {
+            my $img_url = $_->{content};
+            push @photos, $img_url;
+        }
+    });
+    $data->{photo_url} = \@photos;
+
+    return $data;
 }
 
 sub _phone_demixer {
@@ -418,21 +419,21 @@ sub _parse_date {
     my $mon = $dt_now->month();
     my $mday = $dt_now->mday();
 
-    if ($date =~ /сегодня (\d{1,2}):(\d{1,2})/) {
-        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2:00");
+    if ($date =~ /сегодня в (\d{1,2}):(\d{1,2})/) {
+        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
         if ($res > $dt_now) {
             # substr 1 day
-            $res->subtract(days => 1);
+            #$res->subtract(days => 1);
         }
-    } elsif ($date =~ /вчера (\d{1,2}):(\d{1,2})/) {
-        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2:00");
+    } elsif ($date =~ /вчера в (\d{1,2}):(\d{1,2})/) {
+        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
         # substr 1 day
         $res->subtract(days => 1);
-    } elsif ($date =~ /(\d+) (\w+). (\d{1,2}):(\d{1,2})/) {
+    } elsif ($date =~ /(\d+) (\w+) в (\d{1,2}):(\d{1,2})/) {
         my $a_mon = _month_num($2);
         my $a_year = $year;
         if ($a_mon > $mon) { $a_year -= 1; }
-        $res = $parser->parse_datetime("$a_year-$a_mon-$1 $3:$4:00");
+        $res = $parser->parse_datetime("$a_year-$a_mon-$1 $3:$4");
     } else {
         $res = $dt_now;
     }

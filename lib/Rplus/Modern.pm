@@ -1,6 +1,6 @@
 package Rplus::Modern;
 
-use v5.18;
+use v5.25;
 
 use strict;
 use warnings;
@@ -11,6 +11,8 @@ use feature ();
 
 # Вывод сообщений Data::Dumper на русском языке
 use Data::Dumper;
+
+
 $Data::Dumper::Useqq = 1;
 {
     no warnings 'redefine';
@@ -29,7 +31,7 @@ sub import {
     strict->import();
     warnings->import();
     utf8->import();
-    feature->import(':5.18');
+    feature->import(':5.25');
     mro::set_mro(scalar caller(), 'c3');
 }
 

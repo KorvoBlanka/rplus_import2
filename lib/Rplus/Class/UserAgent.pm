@@ -3,9 +3,12 @@ package Rplus::Class::UserAgent {
     use Rplus::Modern;
     use Mojo::UserAgent;
 
+    use Data::Dumper;
 
     sub new {
         my ($class, $interface) = @_;
+
+        say 'using if: ' . $interface;
 
         my $ua = Mojo::UserAgent->new;
         $ua->max_redirects(4);
@@ -24,16 +27,11 @@ package Rplus::Class::UserAgent {
     sub get_res {
         my ($self, $url, $headers) = @_;
 
-        say $url;
-
         my $res;
-        my $retry = 15;
+        my $retry = 3;
 
         while ($retry > 0) {
             $retry -= 1;
-            if ($retry < 5) {
-                say 'retry left ' . $retry;
-            }
 
             my $t = $self->{ua}->get($url, {
                 @{$headers},
@@ -43,8 +41,6 @@ package Rplus::Class::UserAgent {
                 'Accept-Encoding' => 'gzip,deflate,sdch',
                 'Accept-Language' => 'ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4',
             });
-
-            say 'code: ' . $t->res->code;
 
             if ($t->res->code == 200) {
                 $res = $t->res;

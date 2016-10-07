@@ -5,8 +5,10 @@ BEGIN { unshift @INC, "$FindBin::Bin/../lib" }
 
 # outter modules
 use Mojolicious::Lite;
+use JSON;
 
 # model
+use Rplus::Model::Error::Manager;
 use Rplus::Model::Lock::Manager;
 
 use Rplus::Modern;
@@ -17,7 +19,7 @@ use Rplus::Import::ItemDispatcher;
 use Data::Dumper;
 
 
-plugin Minion => {Pg => 'postgresql://raven:PfBvgthfnjhf111@localhost/rplus_import_dev'};
+plugin Minion => {Pg => 'postgresql://raven:raven!12345@localhost/rplus_import_dev'};
 
 app->minion->add_task(enqueue_task => sub {
     my ($job, @args) = @_;
@@ -26,14 +28,9 @@ app->minion->add_task(enqueue_task => sub {
     my $category = $args[0]->{category};
     my $lock_code = $args[0]->{lock_code};
 
-    say 'enqueue_task';
-    say $media;
-    say $location;
-    say $category;
-
     my $lock = Rplus::Model::Lock::Manager->get_objects(query => [code => $lock_code])->[0];
     # it MUST be locked already, cannot die if not (cause we are in worker, and it will not show error if died)
-    unless ($lock) {
+    unless ($lock->state) {
         say 'WTF?!?!? not locked ' . $lock_code;
     }
 
@@ -44,31 +41,40 @@ app->minion->add_task(enqueue_task => sub {
         Rplus::Import::QueueDispatcher::enqueue($media, $location, $category);
         1;
     } or do {
-        say 'ooops';
-        say Dumper $@;
+        my $m = {
+            task => 'enqueue_task',
+            task_arg => {
+                media => $media,
+                location => $location,
+                category => $category
+            },
+            err_msg => $@
+        };
+        my $err = Rplus::Model::Error->new(metadata => to_json($m));
+        $err->save;
     };
 
     # release lock
-    say 'release lock';
     $lock->state(0);
     $lock->save;
-
-
 });
 
 app->minion->add_task(load_item => sub {
     my ($job, @args) = @_;
     my $task = $args[0];
 
-    say 'load_item';
-    say Dumper $task;
-
     eval {
         Rplus::Import::ItemDispatcher::load_item($task);
         1;
     } or do {
-        say 'ooops';
-        say Dumper $@;
+        my $m = {
+            task => 'load_item',
+            task_arg => $task,
+            err_msg => $@
+        };
+        my $err = Rplus::Model::Error->new(metadata => to_json($m));
+        $err->save;
+        $job->fail('error ' . $err->id);
     };
 });
 

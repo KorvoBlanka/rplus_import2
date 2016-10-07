@@ -14,7 +14,7 @@ __PACKAGE__->register_db(
     host     => '127.0.0.1',
     port     => 5432,
     username => 'raven',
-    password => 'PfBvgthfnjhf111',
+    password => 'raven!12345',
     schema   => 'public',
     connect_options => {
         AutoCommit => 1,

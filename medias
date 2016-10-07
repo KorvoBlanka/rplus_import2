@@ -1,57 +1,198 @@
-{
-  media_list => {
+{media_list => {
 
-  ###### - avito - start
+###### - avito - start
 
     avito => {
-      msk => {
-        site_url => 'http://www.avito.ru',
-        host => 'www.avito.ru',
-        page_count => 1,
-        pause_category => 60,
-        pause_item => 2,
+        msk => {
+            site_url => 'http://www.avito.ru',
+            host => 'www.avito.ru',
+            page_count => 2,
+            pause_category => 120,
+            pause_item => 30,
 
-        source_list => [
-          {url => '/moskva/kvartiry/prodam'},
-          {url => '/moskva/komnaty/prodam'},
-          {url => '/moskva/doma_dachi_kottedzhi/prodam'},
-          {url => '/moskva/zemelnye_uchastki/prodam'},
-          {url => '/moskva/kommercheskaya_nedvizhimost/prodam'},
+            source_list => [
+                {url => '/moskva/kvartiry/prodam'},
+                {url => '/moskva/komnaty/prodam'},
+                {url => '/moskva/doma_dachi_kottedzhi/prodam'},
+                {url => '/moskva/zemelnye_uchastki/prodam'},
+                {url => '/moskva/kommercheskaya_nedvizhimost/prodam'},
 
-          {url => '/moskva/kvartiry/sdam'},
-          {url => '/moskva/komnaty/sdam'},
-          {url => '/moskva/doma_dachi_kottedzhi/sdam'},
-          {url => '/moskva/zemelnye_uchastki/sdam'},
-          {url => '/moskva/kommercheskaya_nedvizhimost/sdam'},
-        ],
-      },
-      khv => {
-        site_url => 'http://www.avito.ru',
-        host => 'www.avito.ru',
-        page_count => 1,
-        pause_category => 120,
-        pause_item => 20,
+                {url => '/moskva/kvartiry/sdam'},
+                {url => '/moskva/komnaty/sdam'},
+                {url => '/moskva/doma_dachi_kottedzhi/sdam'},
+                {url => '/moskva/zemelnye_uchastki/sdam'},
+                {url => '/moskva/kommercheskaya_nedvizhimost/sdam'},
+            ],
+        },
 
-        source_list => [
-          {url => '/habarovsk/kvartiry/prodam'},
-          {url => '/habarovsk/komnaty/prodam'},
-          {url => '/habarovsk/doma_dachi_kottedzhi/prodam'},
-          {url => '/habarovsk/zemelnye_uchastki/prodam'},
-          {url => '/habarovsk/kommercheskaya_nedvizhimost/prodam'},
+        khv => {
+            site_url => 'http://www.avito.ru',
+            host => 'www.avito.ru',
+            page_count => 2,
+            pause_category => 120,
+            pause_item => 30,
 
-          {url => '/habarovsk/kvartiry/sdam'},
-          {url => '/habarovsk/komnaty/sdam'},
-          {url => '/habarovsk/doma_dachi_kottedzhi/sdam'},
-          {url => '/habarovsk/zemelnye_uchastki/sdam'},
-          {url => '/habarovsk/kommercheskaya_nedvizhimost/sdam'},
-        ],
-      }
+            source_list => [
+                {url => '/habarovsk/kvartiry/prodam'},
+                {url => '/habarovsk/komnaty/prodam'},
+                {url => '/habarovsk/doma_dachi_kottedzhi/prodam'},
+                {url => '/habarovsk/zemelnye_uchastki/prodam'},
+                {url => '/habarovsk/kommercheskaya_nedvizhimost/prodam'},
+
+                {url => '/habarovsk/kvartiry/sdam'},
+                {url => '/habarovsk/komnaty/sdam'},
+                {url => '/habarovsk/doma_dachi_kottedzhi/sdam'},
+                {url => '/habarovsk/zemelnye_uchastki/sdam'},
+                {url => '/habarovsk/kommercheskaya_nedvizhimost/sdam'},
+            ],
+        }
     },
-  ###### - avito - end
+###### - avito - end
 
-  ###### - irrru - start
-    irrru => {
+###### - irr - start
+    irr => {
+        khv => {
+            site_url => 'http://khabarovsk.irr.ru',
+            host => 'khabarovsk.irr.ru',
+            page_count => 2,
+            pause => 5,
+            offer_count_limit => 3,
 
+            source_list => [
+                {url => '/real-estate/rooms-sale/', type => ''},
+                {url => '/real-estate/apartments-sale/'},
+                {url => '/real-estate/out-of-town/houses/'},
+                {url => '/real-estate/commercial-sale/offices/'},
+                {url => '/real-estate/commercial-sale/misc/'},
+                {url => '/real-estate/commercial-sale/production-warehouses/'},
+                {url => '/real-estate/commercial-sale/retail/'},
+                {url => '/real-estate/commercial-sale/eating/'},
+                {url => '/real-estate/commercial-sale/houses/'},
+                {url => '/real-estate/garage/'},
+
+                {url => '/real-estate/rooms-rent/'},
+                {url => '/real-estate/rent/'},
+                {url => '/real-estate/out-of-town-rent/'},
+                {url => '/real-estate/commercial/offices/'},
+                {url => '/real-estate/commercial/misc/'},
+                {url => '/real-estate/commercial/production-warehouses/'},
+                {url => '/real-estate/commercial/retail/'},
+                {url => '/real-estate/commercial/eating/'},
+                {url => '/real-estate/commercial/houses/'},
+                {url => '/real-estate/garage-rent/'},
+            ]
+        }
+    },
+###### - irrru - end
+
+###### - farpost - start
+    farpost => {
+        khv => {
+            site_url => 'http://www.farpost.ru',
+            host => 'www.farpost.ru',
+            referer => 'http://www.farpost.ru/khabarovsk/',
+            page_count => 2,
+            pause => 5,
+            locality => 'Хабаровск',
+            timezone => '+1000',
+
+            source_list => [
+                {url => '/khabarovsk/realty/sell_flats/'},
+                {url => '/khabarovsk/realty/change_flats/'},
+                {url => '/khabarovsk/realty/sell_houses/'},
+                {url => '/khabarovsk/realty/change_houses/'},
+                {url => '/khabarovsk/realty/land/'},
+                {url => '/khabarovsk/realty/dacha/'},
+                {url => '/khabarovsk/realty/garage/'},
+                {url => '/khabarovsk/realty/sell_business_realty/'},
+
+                {url => '/khabarovsk/realty/rent_flats/'},
+                {url => '/khabarovsk/realty/rent-apartment/'},
+                {url => '/khabarovsk/realty/rent_houses/'},
+                {url => '/khabarovsk/realty/land-rent/'},
+                {url => '/khabarovsk/realty/rent_business_realty/'},
+            ],
+        },
+    },
+###### - farpost - end
+
+###### - CIAN - start
+    cian => {
+        msk => {
+            site_url => 'http://cian.ru',
+            host => 'cian.ru',
+            pause => 5,
+            page_count => 3,
+            follow_redirects => 1,
+
+            lock_file => '/var/tmp/cian_lock_dev',
+
+            source_list => [
+                {url => '/kupit-1-komnatnuyu-kvartiru/'},
+                {url => '/kupit-2-komnatnuyu-kvartiru/'},
+                {url => '/kupit-3-komnatnuyu-kvartiru/'},
+                {url => '/kupit-kvartiru-svobodnoy-planirovki/'},
+                {url => '/kupit-kvartiru-studiu//'},
+                {url => '/kupit-komnatu/'},
+                {url => '/kupit-dom-moskovskaya-oblast/'},
+                {url => '/kupit-taunhaus-moskovskaya-oblast/'},
+                {url => '/kupit-zemelniy-uchastok-moskovskaya-oblast/'},
+
+                {url => '/snyat-1-komnatnuyu-kvartiru/'},
+                {url => '/snyat-2-komnatnuyu-kvartiru/'},
+                {url => '/snyat-3-komnatnuyu-kvartiru/'},
+                {url => '/snyat-kvartiru-studiu/'},
+                {url => '/snyat-komnatu/'},
+                {url => '/snyat-dom-moskovskaya-oblast/'},
+
+                {url => '/snyat-kvartiru-posutochno/'},
+                {url => '/snyat-dom-posutochno-moskovskaya-oblast/'},
+                {url => '/snyat-komnatu-posutochno/'},
+
+                {url => '/kupit-ofis/'},
+                {url => '/snyat-ofis/'},
+
+                {url => '/kupit-sklad/'},
+                {url => '/snyat-sklad/'},
+
+                {url => '/kupit-torgovuyu-ploshad/'},
+                {url => '/snyat-torgovuyu-ploshad/'},
+
+                {url => '/kupit-pomeshenie-pod-proizvodstvo/'},
+                {url => '/snyat-pomeshenie-pod-proizvodstvo/'},
+
+                {url => '/kupit-zdanie/'},
+                {url => '/snyat-zdanie/'},
+
+                {url => '/kupit-pomeshenie-svobodnogo-naznachenija/'},
+                {url => '/snyat-pomeshenie-svobodnogo-naznachenija/'},
+
+                {url => '/kupit-garazh/'},
+                {url => '/snyat-garazh/'}
+            ]
+        }
+    },
+###### - CIAN - end
+
+###### - BN - start
+    bn => {
+        msk => {
+            url => 'http://www.bn.ru',
+            host => 'www.bn.ru',
+            pause => 5,
+            depth => 3,
+
+            source_list => [
+                {url => '/zap_fl.phtml'},
+                {url => '/zap_rm_w.phtml'},
+                {url => '/zap_kmz.phtml'},
+
+                {url => '/zap_ct.phtml'},
+
+                {url => '/zap_ar.phtml'},
+                {url => '/zap_ars.phtml'},
+            ]
+        }
     }
-  }
-}
+###### - BN - end
+}}

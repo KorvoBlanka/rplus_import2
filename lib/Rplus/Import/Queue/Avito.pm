@@ -12,12 +12,17 @@ use Rplus::Model::History::Manager;
 
 use Data::Dumper;
 
+no warnings 'experimental';
+
 my $media_name = 'avito';
+my $media_data;
 my $parser = DateTime::Format::Strptime->new(pattern => '%Y-%m-%d %H:%M:%S');
 my $ua;
 
 sub enqueue_tasks {
     my ($location, $category) = @_;
+
+    say 'loading ' . $media_name . ' - ' . $location . ' - ' . $category;
 
     my $list = _get_category($location,  $category);
 
@@ -26,6 +31,7 @@ sub enqueue_tasks {
         my $eid = _make_eid($_->{id}, $_->{ts});
 
         unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
+            say $_->{url};
             Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
             Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
         }
@@ -35,17 +41,10 @@ sub enqueue_tasks {
 sub _get_category {
     my ($location, $category) = @_;
 
-    my $media = Rplus::Class::Media->instance();
-    my $media_data = $media->get_media($media_name, $location);
-
-    my $interface = Rplus::Class::Interface->instance();
-    $ua = Rplus::Class::UserAgent->new($interface->get_interface());
+    $media_data = Rplus::Class::Media->instance()->get_media($media_name, $location);
+    $ua = Rplus::Class::UserAgent->new(Rplus::Class::Interface->instance()->get_interface());
 
     my @url_list;
-
-    say $interface->get_interface();
-
-    say Dumper $media_data;
 
     my $t = _get_url_list($media_data->{site_url} . $category, $media_data->{page_count}, $media_data->{pause_item});
     push @url_list, @{$t};
@@ -54,15 +53,12 @@ sub _get_category {
 }
 
 sub _get_url_list {
-    my ($main_page, $page_count, $pause) = @_;
+    my ($category_page, $page_count, $pause) = @_;
     my @url_list;
-
-    say 'loading';
-    say $main_page;
 
     for(my $i = 1; $i <= $page_count; $i ++) {
 
-        my $res = $ua->get_res($main_page.'?p=' . $i, []);
+        my $res = $ua->get_res($category_page . '?p=' . $i, []);
         next unless $res;
         my $dom = $res->dom;
 

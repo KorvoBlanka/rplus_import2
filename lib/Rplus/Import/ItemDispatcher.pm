@@ -2,8 +2,11 @@ package Rplus::Import::ItemDispatcher;
 
 use Rplus::Modern;
 use Rplus::Import::Item::Avito;
+use Rplus::Import::Item::Irrru;
+use Rplus::Import::Item::Farpost;
+use Rplus::Import::Item::CIAN;
 
-use Data::Dumper;
+no warnings 'experimental';
 
 
 sub load_item {
@@ -13,12 +16,18 @@ sub load_item {
         when (/avito/) {
             Rplus::Import::Item::Avito::get_item($task->{location}, $task->{url});
         }
-        when (/irrru/) {
-            #Rplus::Import::Item::Avito::get_item($location, $task->{url});
+        when (/irr/) {
+            Rplus::Import::Item::Irrru::get_item($task->{location}, $task->{url});
+        }
+        when (/farpost/) {
+            Rplus::Import::Item::Farpost::get_item($task->{location}, $task->{url});
+        }
+        when (/cian/) {
+            Rplus::Import::Item::CIAN::get_item($task->{location}, $task->{url});
         }
 
         default {
-            say 'WTF?!';
+            say 'WTF?! dunno bout this media ' . $task->{media};
         }
     }
 
