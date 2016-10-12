@@ -7,6 +7,7 @@ use Mojo::Asset::File;
 
 use Exporter qw(import);
 
+
 our @EXPORT_OK = qw(get_config);
 
 
@@ -22,6 +23,7 @@ sub get_config {
 
     my $file = Mojo::Asset::File->new(path => $path);
     my $config = eval $file->slurp;
+
     return $config;
 }
 

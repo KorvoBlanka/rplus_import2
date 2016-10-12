@@ -177,22 +177,188 @@
 ###### - BN - start
     bn => {
         msk => {
-            url => 'http://www.bn.ru',
-            host => 'www.bn.ru',
+            site_url => 'http://www.moskva.bn.ru',
+            host => 'www.moskva.bn.ru',
+            page_count => 3,
             pause => 5,
-            depth => 3,
 
             source_list => [
-                {url => '/zap_fl.phtml'},
-                {url => '/zap_rm_w.phtml'},
-                {url => '/zap_kmz.phtml'},
+                {url => '/sale/city/flats/'},
+                {url => '/sale/city/rooms/'},
+                {url => '/sale/city/elite/'},
+                {url => '/sale/city/newflats/'},
+                {url => '/sale/city/houses/'},
+                {url => '/sale/city/cottages/'},
+                {url => '/sale/city/lands/'},
+                {url => '/sale/commerce/offices/'},
+                {url => '/sale/commerce/comm_new/'},
+                {url => '/sale/commerce/service/'},
+                {url => '/sale/commerce/different/'},
+                {url => '/sale/commerce/freestanding/'},
+                {url => '/sale/commerce/storage/'},
+                {url => '/sale/commerce/comm_lands/'},
 
-                {url => '/zap_ct.phtml'},
-
-                {url => '/zap_ar.phtml'},
-                {url => '/zap_ars.phtml'},
+                {url => '/rent/city/flats/'},
+                {url => '/rent/city/rooms/'},
+                {url => '/rent/city/elite/'},
+                {url => '/rent/city/newflats/'},
+                {url => '/rent/city/houses/'},
+                {url => '/rent/city/cottages/'},
+                {url => '/rent/city/lands/'},
+                {url => '/rent/commerce/offices/'},
+                {url => '/rent/commerce/comm_new/'},
+                {url => '/rent/commerce/service/'},
+                {url => '/rent/commerce/different/'},
+                {url => '/rent/commerce/freestanding/'},
+                {url => '/rent/commerce/storage/'},
+                {url => '/rent/commerce/comm_lands/'},
             ]
         }
-    }
+    },
 ###### - BN - end
+
+###### - BNspb - start
+    bnspb => {
+        spb => {
+            site_url => 'http://www.bn.ru',
+            host => 'www.bn.ru',
+            pause => 5,
+            page_count => 1,
+
+            source_list => [
+              {url => '/zap_fl.phtml'},
+              {url => '/zap_rm_w.phtml'},
+              {url => '/zap_kmz.phtml'},
+
+              {url => '/zap_ct.phtml'},
+
+              {url => '/zap_ar.phtml'},
+              {url => '/zap_ars.phtml'},
+            ]
+        }
+    },
+###### - BNspb - end
+
+###### - MKV - start
+    mkv => {
+        khv => {
+            site_url => 'mirkvartir.ru',
+            city => '/Хабаровский+край/Хабаровск',
+            host => '',
+            page_count => 3,
+            pause => 5,
+            source_list => [
+                {sub => 'http://', url => '/'},
+                {sub => 'http://', url => '/Комнаты/'},
+                {sub => 'http://dom.', url => '/'},
+                {sub => 'http://dom.', url => '/Таунхаусы/'},
+                {sub => 'http://dom.', url => '/Участки/'},
+                {sub => 'http://cre.', url => '/Офисы/'},
+                {sub => 'http://cre.', url => '/Помещения+свободного+назначения/'},
+                {sub => 'http://cre.', url => '/Склады/'},
+                {sub => 'http://cre.', url => '/Торговые+помещения/'},
+                {sub => 'http://zem.', url => '/'},
+
+                {sub => 'http://arenda.', url => '/'},
+                {sub => 'http://arenda.', url => '/Посуточно'},
+                {sub => 'http://arenda.', url => '/Комнаты/'},
+
+                {sub => 'http://arendadoma.', url => '/'},
+                {sub => 'http://arendadoma.', url => '/Таунхаусы/'},
+
+                {sub => 'http://arendacre.', url => '/Офисы/'},
+                {sub => 'http://arendacre.', url => '/Помещения+свободного+назначения/'},
+                {sub => 'http://arendacre.', url => '/Склады/'},
+                {sub => 'http://arendacre.', url => '/Торговые+помещения/'},
+
+                {sub => 'http://new.', url => '/'},
+            ]
+        }
+    },
+###### - MKV - end
+
+###### - Present_site - begin
+    present_site => {
+        khv => {
+            pause => 5,
+            site_url => 'http://present-dv.ru',
+            page_count => 3,
+            host => '',
+
+            source_list => [
+                {url => '/present/notice/index/rubric/kvartiry-prodaja/'},
+                {url => '/present/notice/index/rubric/doma-v-habarovske-i-dalnevostochnom-regione/'},
+                {url => '/present/notice/index/rubric/uchastki-pod-individualnoe-stroitelstvo-prodaja/'},
+                {url => '/present/notice/index/rubric/dachnye-uchastki-prodaja/'},
+                {url => '/present/notice/index/rubric/garaji-prodaja/'},
+                {url => '/present/notice/index/rubric/ofisnye-pomeshcheniya-prodaja/'},
+                {url => '/present/notice/index/rubric/zdaniya-prodaja/'},
+                {url => '/present/notice/index/rubric/torgovye-ploshchadi-podaja/'},
+                {url => '/present/notice/index/rubric/ploshchadi-pod-avtobiznes-prodaja/'},
+                {url => '/present/notice/index/rubric/proizvodstvennye-ploshchadi-sklady-bazy/'},
+                {url => '/present/notice/index/rubric/tsokolnye-i-podvalnye-pomeshcheniya/'},
+                {url => '/present/notice/index/rubric/pomeshcheniya-svobodnogo-naznacheniya-prodaja/'},
+
+                {url => '/present/notice/index/rubric/sdam-kvartiry/'},
+                {url => '/present/notice/index/rubric/komnaty-malosemeyki-sdam/'},
+                {url => '/present/notice/index/rubric/sdam-posutochno-jilaya-nedvijimost/'},
+                {url => '/present/notice/index/rubric/sdam-doma/'},
+                {url => '/present/notice/index/rubric/uchastki-sdam/'},
+                {url => '/present/notice/index/rubric/ofisnye-pomeshcheniya-sdam/'},
+                {url => '/present/notice/index/rubric/sdam-zdaniya/'},
+                {url => '/present/notice/index/rubric/torgovye-ploshchadi-sdam/'},
+                {url => '/present/notice/index/rubric/proizvodstvennoe-pomeshchenie-sdam/'},
+                {url => '/present/notice/index/rubric/pomeshcheniya-pod-avtobiznes-sdam/'},
+                {url => '/present/notice/index/rubric/sklady-bazy-sdam/'},
+                {url => '/present/notice/index/rubric/pomeshcheniya-pod-sferu-uslug-sdam/'},
+                {url => '/present/notice/index/rubric/pomeshcheniya-svobodnogo-naznacheniya-sdam/'},
+            ],
+        }
+    },
+###### - Present_site - end
+
+###### - Barahlo - start
+    barahlo => {
+        khv => {
+            pause => 5,
+            site_url => 'http://habarovsk.barahla.net',
+            host => '',
+            page_count => 3,
+
+            source_list => [
+                {url => '/realty/217/1/'},
+                {url => '/realty/208/1/'},
+                {url => '/realty/216/1/'},
+                {url => '/realty/245/1/'},
+                {url => '/realty/218/1/'},
+
+                {url => '/realty/214/1/'},
+                {url => '/realty/514/1/'},
+                {url => '/realty/210/1/'},
+                {url => '/realty/213/1/'},
+                {url => '/realty/274/1/'},
+
+                {url => '/realty/219/1/'},
+                {url => '/realty/286/1/'},
+                {url => '/realty/219/1/'},
+            ],
+        }
+    },
+###### - Barahlo - end
+
+###### - VNH - start
+    vnh => {
+        khv => {
+            site_url => 'http://vnh27.ru',
+            host => '',
+            page_count => 5,
+            pause => 3,
+            city => 'Хабаровск',
+            sort => 3,
+            limit => 20,
+            source_list => [{url => 'stub'}]
+        }
+    },
+###### - VNH - end
+
 }}

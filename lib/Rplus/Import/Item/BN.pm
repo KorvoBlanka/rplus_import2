@@ -19,94 +19,9 @@ no warnings 'experimental';
 
 my $media_name = 'bn';
 my $media_data;
-my $parser = DateTime::Format::Strptime->new(pattern => '%Y-%m-%d %H:%M');
+my $parser = DateTime::Format::Strptime->new(pattern => '%d.%m.%Y');
 my $ua;
 
-my $META = {
-    params => {
-        dict => {
-            bathrooms => {
-                '__field__' => 'bathroom_id',
-                '^с\\/у\\s+смежн\\.?$' => 8,
-                '^смежн\\.?\\s+с\\/у$' => 8,
-                '^с\\/у\\s+разд\\.?$' => 3,
-                '^без\\s+удобств$' => 1,
-                '^с\\/у\\s+совм\\.?$' => 8
-            },
-            balconies => {
-                '__field__' => 'balcony_id',
-                '^б\\/з$' => 5,
-                '^б\\/балк\\.?$' => 1,
-                '^2\\s+лодж\\.?$' => 8,
-                '^б\\/б$' => 1,
-                '^балк\\.?$' => 2,
-                '^лодж\\.?$' => 3,
-                '^2\\s+балк\\.?$' => 7,
-                '^л\\/з$' => 6
-            },
-            ap_schemes => {
-                '__field__' => 'ap_scheme_id',
-                '^улучшенная\\.?$' => 3,
-                '^хрущевка\\.?$' => 2,
-                '^хрущовка\\.?$' => 2,
-                '^общежитие' => 6,
-                '^индивидуальная\\.?$' => 6,
-                '^индивидуальная\\.?\\s+планировка\\.?$' => 5,
-                '^улучшенная\\.?$' => 3,
-                '^брежневка\\.?$' => 3,
-                '^новая\\.?\\s+планировка\\.?$' => 4,
-                '^сталинка\\.?$' => 1,
-                '^(?:улучшенная\\.?\\s+планировка\\.?)|(?:планировка\\.?\\s+улучшенная\\.?)|(?:улучшенная\\.)$' => 3,
-                '^хрущ\\.?$' => 2,
-                '^общежити' => 6,
-                '^инд\\.?\\s+план\\.?$' => 5,
-                '^брежн\\.?$' => 3,
-                '^нов\\.?\\s+план\\.?$' => 4,
-                '^стал\\.?$' => 1,
-                '^(?:улучш\\.?\\s+план\\.?)|(?:план\\.?\\s+улучш\\.?)|(?:улучш\\.)$' => 3
-            },
-            house_types => {
-                '__field__' => 'house_type_id',
-                '^кирп\\.?$' => 1,
-                '^монолит.+?\\-кирп\\.?$' => 7,
-                '^монолитн?\\.?$' => 2,
-                '^пан\\.?$' => 3,
-                '^брус$' => 5,
-                '^дерев\\.?$' => 4
-            },
-            conditions => {
-                '__field__' => 'condition_id',
-                '^соц\\.?\\s+ремонт$' => 2,
-                '^тр\\.?\\s+ремонт$' => 6,
-                'еврорем' => 4,
-                '^отл\\.?\\s+сост\\.?$' => 12,
-                '^хор\\.?\\s+сост\\.?$' => 11,
-                '^сост\\.?\\s+хор\\.?$' => 11,
-                '^удовл\\.?\\s+сост\\.?$' => 9,
-                '^после\\s+строит\\.?$' => 1,
-                '^сост\\.?\\s+отл\\.?$' => 12,
-                '^дизайнерский ремонт$' => 5,
-                '^п\\/строит\\.?$' => 1,
-                '^сост\\.?\\s+удовл\\.?$' => 9,
-                '^т\\.\\s*к\\.\\s*р\\.$' => 7,
-                '^сделан ремонт$' => 3,
-                '^норм\\.?\\s+сост\\.?$' => 10,
-                '^треб\\.?\\s+ремонт$' => 6,
-                '^сост\\.?\\s+норм\\.?$' => 10
-            },
-            room_schemes => {
-                '__field__' => 'room_scheme_id',
-                '^комн\\.?\\s+разд\\.?$' => 3,
-                'икарус' => 5,
-                '^разд\\.?\\s+комн\\.?$' => 3,
-                '^смежн\\.?\\s+комн\\.?$' => 4,
-                '^комн\\.?\\s+смежн\\.?$' => 4,
-                '^кухня\\-гостиная$' => 2,
-                '^студия$' => 1
-            }
-        },
-    }
-};
 
 sub get_item {
     my ($location, $item_url) = @_;
@@ -229,13 +144,14 @@ sub parse_adv {
     my $subject_name;
     $t = $dom->at('div[class="table"]')->find('dl');
     $t->each(sub {
-      my $h = $_->at('dt')->text;
+      my $h = trim($_->at('dt')->text);
 
       my $dn = $_->at('dd');
       return unless $dn;
-      my $d = $dn->all_text;
+      my $d = trim($dn->all_text);
+      $d =~ s/[\h\v]+/ /g;
 
-      say $h . ' ' . $d;
+      say $h . ' - ' . $d;
 
       given($h) {
 
@@ -331,14 +247,17 @@ sub parse_adv {
         when (/ремонт/i) {
 
         }
+        when (/дата обновления/i) {
+            my $ut = $parser->parse_datetime($d);
+            say $ut;
+            $data->{add_date} = $ut->datetime();
+        }
       }
     });
 
     if ($subject_name !~ /частное/) {
-      say 'company: ' . $subject_name;
       foreach (@{$data->{'owner_phones'}}) {
-          say 'add mediator ' . $_;
-          add_mediator($subject_name, $_);
+          $data->{mediator_company} = $subject_name;
       }
     }
 
@@ -351,81 +270,6 @@ sub parse_adv {
     $data->{photo_url} = \@photos;
 
     return $data;
-}
-
-sub _parse_date {
-    my $date = lc(shift);
-
-    my $res;
-    my $dt_now = DateTime->now();
-    my $year = $dt_now->year();
-    my $mon = $dt_now->month();
-    my $mday = $dt_now->mday();
-
-    if ($date =~ /сегодня, (\d{1,2}):(\d{1,2})/) {
-        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2:00");
-        if ($res > $dt_now) {
-            # substr 1 day
-            $res->subtract(days => 1);
-        }
-    } elsif ($date =~ /вчера, (\d{1,2}):(\d{1,2})/) {
-        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2:00");
-        # substr 1 day
-        $res->subtract(days => 1);
-    } elsif ($date =~ /(\d+) (\w+) (\d{1,2}):(\d{1,2})/) {
-        my $a_mon = _month_num($2);
-        my $a_year = $year;
-        if ($a_mon > $mon) { $a_year -= 1; }
-        $res = $parser->parse_datetime("$a_year-$a_mon-$1 $3:$4:00");
-    } else {
-        $res = $dt_now;
-    }
-
-    return $res;
-}
-
-sub _month_num {
-    my $month_str = lc(shift);
-
-    given ($month_str) {
-        when (/янв/) {
-            return 1;
-        }
-        when (/фев/) {
-            return 2;
-        }
-        when (/мар/) {
-            return 3;
-        }
-        when (/апр/) {
-            return 4;
-        }
-        when (/мая/) {
-            return 5;
-        }
-        when (/июн/) {
-            return 6;
-        }
-        when (/июл/) {
-            return 7;
-        }
-        when (/авг/) {
-            return 8;
-        }
-        when (/сен/) {
-            return 9;
-        }
-        when (/окт/) {
-            return 10;
-        }
-        when (/ноя/) {
-            return 11;
-        }
-        when (/дек/) {
-            return 12;
-        }
-    }
-    return 0;
 }
 
 1;

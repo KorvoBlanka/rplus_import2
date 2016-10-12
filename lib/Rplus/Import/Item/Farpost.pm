@@ -256,8 +256,7 @@ sub parse_adv {
 
     $data->{'locality'} = $media_data->{locality};
 
-    my $t;
-    $t = $data->{source_url};
+    my $t = $data->{source_url};
     # offer type code
     if ($t =~ /rent/i) {
         $data->{offer_type_code} = 'rent';
@@ -288,12 +287,11 @@ sub parse_adv {
         $data->{'type_code'} = 'other';
     }
 
-    my $t;
     given($data->{'type_code'}) {
         when ('other') {
             my $n = $dom->find('span[data-field="subject"]');
             if ($n->size > 0) {
-                $t = trim($n->first->text);
+                my $t = trim($n->first->text);
                 if ($t =~ /офис/i) {
                     $data->{'type_code'} = 'office_place';
                 }

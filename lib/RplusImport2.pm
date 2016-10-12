@@ -12,7 +12,6 @@ use Rplus::Import::QueueDispatcher;
 use Rplus::Import::ItemDispatcher;
 use Rplus::Util::Config;
 
-use Rplus::Import::Item::BN;
 
 use Data::Dumper;
 
@@ -45,16 +44,52 @@ sub startup {
     # API namespace
     $r->route('/api/:controller/:action')->to(namespace => 'RplusImport2::Controller::API');
 
-    Rplus::Import::QueueDispatcher::enqueue('bn', 'msk', '/zap_fl.phtml');
+    #Rplus::Import::QueueDispatcher::enqueue('present_site', 'khv', '/present/notice/index/rubric/kvartiry-prodaja/');
+    #Rplus::Import::QueueDispatcher::enqueue('mkv', 'khv', 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/');
+    #Rplus::Import::QueueDispatcher::enqueue('bn', 'msk', '/sale/city/flats/');
     #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/kvartiry/sdam');
     #Rplus::Import::QueueDispatcher::enqueue('irrru', 'khv', '/real-estate/rooms-sale/');
     #Rplus::Import::QueueDispatcher::enqueue('farpost', 'khv', '/khabarovsk/realty/sell_flats/');
     #Rplus::Import::QueueDispatcher::enqueue('cian', 'msk', '/kupit-1-komnatnuyu-kvartiru/');
+    #Rplus::Import::QueueDispatcher::enqueue('barahlo', 'khv', '/realty/217/1/');
+    #Rplus::Import::QueueDispatcher::enqueue('vnh', 'khv');
+    #Rplus::Import::QueueDispatcher::enqueue('bnspb', 'spb', '/zap_fl.phtml');
+
+
+    Rplus::Import::ItemDispatcher::load_item({
+        media => 'bnspb',
+        location => 'spb',
+        url => '/detail/flats/1188440.html'
+    });
+
+    #Rplus::Import::ItemDispatcher::load_item({
+    #    media => 'vnh',
+    #    location => 'khv',
+    #    url => '/declare/1461253'
+    #});
+
+    #Rplus::Import::ItemDispatcher::load_item({
+    #    media => 'barahlo',
+    #    location => 'khv',
+    #    url => 'http://habarovsk.barahla.net/realty/217/8493651.html'
+    #});
+
+    #Rplus::Import::ItemDispatcher::load_item({
+    #    media => 'present_site',
+    #    location => 'khv',
+    #    url => '/present/notice/view/3692816'
+    #});
+
+    #Rplus::Import::ItemDispatcher::load_item({
+    #    media => 'mkv',
+    #    location => 'khv',
+    #    url => 'http://www.mirkvartir.ru/165979341/'
+    #});
 
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'bn',
     #    location => 'msk',
-    #    url => 'http://www.cian.ru/sale/flat/149964608/'
+    #    url => '/sale/city/flats/26497952/'
     #});
 
     #Rplus::Import::ItemDispatcher::load_item({
@@ -82,7 +117,7 @@ sub startup {
     #});
 
 
-    if (1) {
+    if (0) {
 
         my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
             # buisy lock

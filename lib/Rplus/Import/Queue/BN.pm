@@ -30,6 +30,8 @@ sub enqueue_tasks {
 
         my $eid = $_->{id} . '_0';
 
+        say $_->{url};
+
         unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
             say $_->{url};
             Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
@@ -56,9 +58,13 @@ sub _get_url_list {
     my ($category_page, $page_count, $pause) = @_;
     my @url_list;
 
+    say $category_page;
+
     for(my $i = 1; $i <= $page_count; $i ++) {
 
-        my $res = get_res($category_page, []);
+        my $page_url = $category_page . '?start=' . 50 * ($i - 1);
+
+        my $res = $ua->get_res($page_url, []);
         next unless $res;
         my $dom = $res->dom;
 
@@ -67,12 +73,13 @@ sub _get_url_list {
             return unless $_->at('a');
 
             my $item_url = $_->at('a')->attr('href');
-            my $item_id = $_->at('input[name="sID[]"]')->val;
 
-            say $item_url;
-            say $item_id;
+            my $item_id;
+            if ($item_url =~ /(\d+)/) {
+                $item_id = $1;
+            }
 
-            push(@url_list, {id => $item_id, url => $item_url, ts => ''});
+            push @url_list, {id => $item_id, url => $item_url, ts => ''};
 
         });
 
