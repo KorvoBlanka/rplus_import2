@@ -68,7 +68,7 @@ sub parse_adv {
     $data->{type_code} = _get_realty_type_code($ad_header);
 
     if ($ad_header =~ /сдам/i) {
-        $data->{offer_type_code} = 'realty';
+        $data->{offer_type_code} = 'rent';
     }
 
     if($data->{source_url} =~ /\/(219|286|219)\//){
