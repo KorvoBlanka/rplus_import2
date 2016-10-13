@@ -67,6 +67,10 @@ sub parse_adv {
     my $ad_header = $dom->find('table[class="ob_header"]')->first->at('tr')->at('td')->next->at('h1')->text;
     $data->{type_code} = _get_realty_type_code($ad_header);
 
+    if ($ad_header =~ /сдам/i) {
+        $data->{offer_type_code} = 'realty';
+    }
+
     if($data->{source_url} =~ /\/(219|286|219)\//){
         $data->{rent_type} = 'short';
     }
