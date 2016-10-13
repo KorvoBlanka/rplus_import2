@@ -180,14 +180,14 @@ sub parse_adv {
       if($_->at('strong')->text =~ /Цена:/){
           my $price = $_->at('span')->text;
           $price =~ s/\D//g;
-          $data->{owner_price} = 0 + $price/1000 if $price > 0;
+          $data->{owner_price} = $price / 1000 if $price > 0;
       }
 
       #извлечение арендной платы
       elsif ($_->at('strong')->text =~ /Арендная плата/){
-            my $price_str = $_->at('span')->text;
-            $price_str =~ /\d+/;
-            $data->{owner_price} = $price_str;
+            my $price = $_->at('span')->text;
+            $price =~ s/\D//g;;
+            $data->{owner_price} = $price / 1000;
       }
 
       #определяем новостройку
