@@ -1,0 +1,10 @@
+{
+  hypnotoad => {
+    proxy => 1,
+    pid_file => 'hypnotoad.pid',
+    listen => [
+      'http://:19099'
+    ]
+  },
+  secret => 'pelbHipE5pTQvKAAyhZxkhhXNTArcxiN'
+}
