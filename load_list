@@ -1,5 +1,0 @@
-{load_list => {
-    avito => ['khv'],
-    irr => ['khv'],
-    farpost => ['khv']
-}}
