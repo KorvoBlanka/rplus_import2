@@ -42,7 +42,7 @@ sub _get_item {
 
     my $data = {
         source_media => $media_name,
-        source_url => $media_data->{site_url} . $item_url,
+        source_url => $item_url,
         type_code => 'other',
         offer_type_code => 'sale',
         add_date => ''
@@ -56,7 +56,7 @@ sub _get_item {
 sub parse_adv {
     my ($data, $item_url) = @_;
 
-    my $source_url = $media_data->{site_url} . $item_url;
+    my $source_url = $item_url;
 
     my $res = $ua->get_res($source_url, [
         Host => $media_data->{host},

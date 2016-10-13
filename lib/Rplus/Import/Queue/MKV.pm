@@ -24,7 +24,7 @@ sub enqueue_tasks {
 
     say 'loading ' . $media_name . ' - ' . $location . ' - ' . $category;
 
-    my $list = _get_category($location,  $category);
+    my $list = _get_category($media_data->{site_url} . $location,  $category);
 
     foreach (@{$list}) {
 
