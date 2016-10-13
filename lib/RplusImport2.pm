@@ -56,11 +56,11 @@ sub startup {
     #Rplus::Import::QueueDispatcher::enqueue('bnspb', 'spb', '/zap_fl.phtml');
 
 
-    Rplus::Import::ItemDispatcher::load_item({
-        media => 'bnspb',
-        location => 'spb',
-        url => '/detail/flats/1188440.html'
-    });
+    #Rplus::Import::ItemDispatcher::load_item({
+    #    media => 'bnspb',
+    #    location => 'spb',
+    #    url => '/detail/flats/1188440.html'
+    #});
 
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'vnh',
@@ -117,7 +117,7 @@ sub startup {
     #});
 
 
-    if (0) {
+    if (1) {
 
         my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
             # buisy lock
