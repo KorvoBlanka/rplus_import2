@@ -45,7 +45,7 @@ sub startup {
     $r->route('/api/:controller/:action')->to(namespace => 'RplusImport2::Controller::API');
 
     #Rplus::Import::QueueDispatcher::enqueue('present_site', 'khv', '/present/notice/index/rubric/kvartiry-prodaja/');
-    #Rplus::Import::QueueDispatcher::enqueue('mkv', 'khv', 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/');
+    #Rplus::Import::QueueDispatcher::enqueue('mkv', 'khv', 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/');
     #Rplus::Import::QueueDispatcher::enqueue('bn', 'msk', '/sale/city/flats/');
     #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/kvartiry/sdam');
     #Rplus::Import::QueueDispatcher::enqueue('irrru', 'khv', '/real-estate/rooms-sale/');

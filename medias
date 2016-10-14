@@ -24,7 +24,6 @@
                 {url => '/moskva/kommercheskaya_nedvizhimost/sdam'},
             ],
         },
-
         khv => {
             site_url => 'http://www.avito.ru',
             host => 'www.avito.ru',
@@ -45,6 +44,27 @@
                 {url => '/habarovsk/zemelnye_uchastki/sdam'},
                 {url => '/habarovsk/kommercheskaya_nedvizhimost/sdam'},
             ],
+        },
+        vld => {
+            site_url => 'http://www.avito.ru',
+            host => 'www.avito.ru',
+            page_count => 2,
+            pause_category => 120,
+            pause_item => 30,
+
+            source_list => [
+                {url => '/vladivostok/kvartiry/prodam'},
+                {url => '/vladivostok/komnaty/prodam'},
+                {url => '/vladivostok/doma_dachi_kottedzhi/prodam'},
+                {url => '/vladivostok/zemelnye_uchastki/prodam'},
+                {url => '/vladivostok/kommercheskaya_nedvizhimost/prodam'},
+
+                {url => '/vladivostok/kvartiry/sdam'},
+                {url => '/vladivostok/komnaty/sdam'},
+                {url => '/vladivostok/doma_dachi_kottedzhi/sdam'},
+                {url => '/vladivostok/zemelnye_uchastki/sdam'},
+                {url => '/vladivostok/kommercheskaya_nedvizhimost/sdam'},
+            ],
         }
     },
 ###### - avito - end
@@ -54,6 +74,37 @@
         khv => {
             site_url => 'http://khabarovsk.irr.ru',
             host => 'khabarovsk.irr.ru',
+            page_count => 2,
+            pause => 5,
+            offer_count_limit => 3,
+
+            source_list => [
+                {url => '/real-estate/rooms-sale/', type => ''},
+                {url => '/real-estate/apartments-sale/'},
+                {url => '/real-estate/out-of-town/houses/'},
+                {url => '/real-estate/commercial-sale/offices/'},
+                {url => '/real-estate/commercial-sale/misc/'},
+                {url => '/real-estate/commercial-sale/production-warehouses/'},
+                {url => '/real-estate/commercial-sale/retail/'},
+                {url => '/real-estate/commercial-sale/eating/'},
+                {url => '/real-estate/commercial-sale/houses/'},
+                {url => '/real-estate/garage/'},
+
+                {url => '/real-estate/rooms-rent/'},
+                {url => '/real-estate/rent/'},
+                {url => '/real-estate/out-of-town-rent/'},
+                {url => '/real-estate/commercial/offices/'},
+                {url => '/real-estate/commercial/misc/'},
+                {url => '/real-estate/commercial/production-warehouses/'},
+                {url => '/real-estate/commercial/retail/'},
+                {url => '/real-estate/commercial/eating/'},
+                {url => '/real-estate/commercial/houses/'},
+                {url => '/real-estate/garage-rent/'},
+            ]
+        },
+        vld => {
+            site_url => 'http://vladivostok.irr.ru',
+            host => 'vladivostok.irr.ru',
             page_count => 2,
             pause => 5,
             offer_count_limit => 3,
@@ -111,6 +162,32 @@
                 {url => '/khabarovsk/realty/rent_houses/'},
                 {url => '/khabarovsk/realty/land-rent/'},
                 {url => '/khabarovsk/realty/rent_business_realty/'},
+            ],
+        },
+        vld => {
+            site_url => 'http://www.farpost.ru',
+            host => 'www.farpost.ru',
+            referer => 'http://www.farpost.ru/vladivostok/',
+            page_count => 2,
+            pause => 5,
+            locality => 'Владивосток',
+            timezone => '+1000',
+
+            source_list => [
+                {url => '/vladivostok/realty/sell_flats/'},
+                {url => '/vladivostok/realty/change_flats/'},
+                {url => '/vladivostok/realty/sell_houses/'},
+                {url => '/vladivostok/realty/change_houses/'},
+                {url => '/vladivostok/realty/land/'},
+                {url => '/vladivostok/realty/dacha/'},
+                {url => '/vladivostok/realty/garage/'},
+                {url => '/vladivostok/realty/sell_business_realty/'},
+
+                {url => '/vladivostok/realty/rent_flats/'},
+                {url => '/vladivostok/realty/rent-apartment/'},
+                {url => '/vladivostok/realty/rent_houses/'},
+                {url => '/vladivostok/realty/land-rent/'},
+                {url => '/vladivostok/realty/rent_business_realty/'},
             ],
         },
     },
@@ -243,39 +320,123 @@
     mkv => {
         khv => {
             site_url => 'mirkvartir.ru',
-            city => '/Хабаровский+край/Хабаровск',
             host => '',
             page_count => 3,
             pause => 5,
             source_list => [
-                {sub => 'http://', url => '/'},
-                {sub => 'http://', url => '/Комнаты/'},
-                {sub => 'http://dom.', url => '/'},
-                {sub => 'http://dom.', url => '/Таунхаусы/'},
-                {sub => 'http://dom.', url => '/Участки/'},
-                {sub => 'http://cre.', url => '/Офисы/'},
-                {sub => 'http://cre.', url => '/Помещения+свободного+назначения/'},
-                {sub => 'http://cre.', url => '/Склады/'},
-                {sub => 'http://cre.', url => '/Торговые+помещения/'},
-                {sub => 'http://zem.', url => '/'},
+                {url => 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/'},
+                {url => 'http://www.dom.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://www.dom.mirkvartir.ru/Хабаровский+край/Хабаровск/Таунхаусы/'},
+                {url => 'http://www.dom.mirkvartir.ru/Хабаровский+край/Хабаровск/Участки/'},
+                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Офисы/'},
+                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Помещения+свободного+назначения/'},
+                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Склады/'},
+                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Торговые+помещения/'},
+                {url => 'http://www.zem.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
 
-                {sub => 'http://arenda.', url => '/'},
-                {sub => 'http://arenda.', url => '/Посуточно'},
-                {sub => 'http://arenda.', url => '/Комнаты/'},
+                {url => 'http://www.arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://www.arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/Посуточно'},
+                {url => 'http://www.arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/'},
 
-                {sub => 'http://arendadoma.', url => '/'},
-                {sub => 'http://arendadoma.', url => '/Таунхаусы/'},
+                {url => 'http://www.arendadoma.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://www.arendadoma.mirkvartir.ru/Хабаровский+край/Хабаровск/Таунхаусы/'},
 
-                {sub => 'http://arendacre.', url => '/Офисы/'},
-                {sub => 'http://arendacre.', url => '/Помещения+свободного+назначения/'},
-                {sub => 'http://arendacre.', url => '/Склады/'},
-                {sub => 'http://arendacre.', url => '/Торговые+помещения/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Офисы/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Помещения+свободного+назначения/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Склады/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Торговые+помещения/'},
 
-                {sub => 'http://new.', url => '/'},
+                {url => 'http://www.new.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+            ]
+        },
+        vld => {
+            site_url => 'mirkvartir.ru',
+            host => '',
+            page_count => 3,
+            pause => 5,
+            source_list => [
+                {url => 'http://www.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://www.mirkvartir.ru/Приморский+край/Владивосток/Комнаты/'},
+                {url => 'http://www.dom.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://www.dom.mirkvartir.ru/Приморский+край/Владивосток/Таунхаусы/'},
+                {url => 'http://www.dom.mirkvartir.ru/Приморский+край/Владивосток/Участки/'},
+                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Офисы/'},
+                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Помещения+свободного+назначения/'},
+                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Склады/'},
+                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Торговые+помещения/'},
+                {url => 'http://www.zem.mirkvartir.ru/Приморский+край/Владивосток/'},
+
+                {url => 'http://www.arenda.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://www.arenda.mirkvartir.ru/Приморский+край/Владивосток/Посуточно'},
+                {url => 'http://www.arenda.mirkvartir.ru/Приморский+край/Владивосток/Комнаты/'},
+
+                {url => 'http://www.arendadoma.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://www.arendadoma.mirkvartir.ru/Приморский+край/Владивосток/Таунхаусы/'},
+
+                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Офисы/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Помещения+свободного+назначения/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Склады/'},
+                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Торговые+помещения/'},
+
+                {url => 'http://www.new.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
             ]
         }
     },
 ###### - MKV - end
+
+###### - Barahlo - start
+    barahlo => {
+        khv => {
+            pause => 5,
+            site_url => 'http://habarovsk.barahla.net',
+            host => '',
+            page_count => 3,
+
+            source_list => [
+                {url => '/realty/217/1/'},
+                {url => '/realty/208/1/'},
+                {url => '/realty/216/1/'},
+                {url => '/realty/245/1/'},
+                {url => '/realty/218/1/'},
+
+                {url => '/realty/214/1/'},
+                {url => '/realty/514/1/'},
+                {url => '/realty/210/1/'},
+                {url => '/realty/213/1/'},
+                {url => '/realty/274/1/'},
+
+                {url => '/realty/219/1/'},
+                {url => '/realty/286/1/'},
+                {url => '/realty/219/1/'},
+            ],
+        },
+        vld => {
+            pause => 5,
+            site_url => 'http://vl.barahla.net',
+            host => '',
+            page_count => 3,
+
+            source_list => [
+                {url => '/realty/217/1/'},
+                {url => '/realty/208/1/'},
+                {url => '/realty/216/1/'},
+                {url => '/realty/245/1/'},
+                {url => '/realty/218/1/'},
+
+                {url => '/realty/214/1/'},
+                {url => '/realty/514/1/'},
+                {url => '/realty/210/1/'},
+                {url => '/realty/213/1/'},
+                {url => '/realty/274/1/'},
+
+                {url => '/realty/219/1/'},
+                {url => '/realty/286/1/'},
+                {url => '/realty/219/1/'},
+            ],
+        },
+    },
+###### - Barahlo - end
 
 ###### - Present_site - begin
     present_site => {
@@ -316,35 +477,6 @@
         }
     },
 ###### - Present_site - end
-
-###### - Barahlo - start
-    barahlo => {
-        khv => {
-            pause => 5,
-            site_url => 'http://habarovsk.barahla.net',
-            host => '',
-            page_count => 3,
-
-            source_list => [
-                {url => '/realty/217/1/'},
-                {url => '/realty/208/1/'},
-                {url => '/realty/216/1/'},
-                {url => '/realty/245/1/'},
-                {url => '/realty/218/1/'},
-
-                {url => '/realty/214/1/'},
-                {url => '/realty/514/1/'},
-                {url => '/realty/210/1/'},
-                {url => '/realty/213/1/'},
-                {url => '/realty/274/1/'},
-
-                {url => '/realty/219/1/'},
-                {url => '/realty/286/1/'},
-                {url => '/realty/219/1/'},
-            ],
-        }
-    },
-###### - Barahlo - end
 
 ###### - VNH - start
     vnh => {

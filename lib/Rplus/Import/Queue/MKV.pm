@@ -9,8 +9,11 @@ use Rplus::Class::UserAgent;
 
 use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
+use URI::Encode qw(uri_encode uri_decode);
 
 use Data::Dumper;
+
+use utf8;
 
 no warnings 'experimental';
 
@@ -24,11 +27,13 @@ sub enqueue_tasks {
 
     say 'loading ' . $media_name . ' - ' . $location . ' - ' . $category;
 
-    my $list = _get_category($media_data->{site_url} . $location,  $category);
+    my $list = _get_category($location,  $category);
 
     foreach (@{$list}) {
 
         my $eid = $_->{id} . '_0';
+
+        say $_->{url};
 
         unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
             say $_->{url};
@@ -58,7 +63,10 @@ sub _get_url_list {
 
     for(my $i = 1; $i <= $page_count; $i ++) {
 
-        my $res = $ua->get_res($category_page . '?p=' . $i, []);
+        my $enc_url = uri_encode($category_page . '?by=dateadded&p=' . $i);
+        say $enc_url;
+
+        my $res = $ua->get_res($enc_url, []);
         next unless $res;
         my $dom = $res->dom;
 

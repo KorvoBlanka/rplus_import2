@@ -7,6 +7,7 @@ use Mojo::Asset::File;
 
 use Exporter qw(import);
 
+use utf8;
 
 our @EXPORT_OK = qw(get_config);
 
