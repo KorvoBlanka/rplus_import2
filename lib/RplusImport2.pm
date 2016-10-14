@@ -74,11 +74,11 @@ sub startup {
     #    url => 'http://habarovsk.barahla.net/realty/217/8493651.html'
     #});
 
-    Rplus::Import::ItemDispatcher::load_item({
-        media => 'present_site',
-        location => 'khv',
-        url => '/present/notice/view/3473868'
-    });
+    #Rplus::Import::ItemDispatcher::load_item({
+    #    media => 'present_site',
+    #    location => 'khv',
+    #    url => '/present/notice/view/3473868'
+    #});
 
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'mkv',
@@ -117,7 +117,7 @@ sub startup {
     #});
 
 
-    if (0) {
+    if (1) {
 
         my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
             # buisy lock
