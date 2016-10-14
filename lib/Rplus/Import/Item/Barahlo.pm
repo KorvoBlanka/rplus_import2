@@ -244,7 +244,6 @@ sub get_phone_number {
             if($author_ob->attr('onclick') =~ /key: '(\w+)'/) {
                 my $tx = $ua->{ua}->post($media_data->{site_url} . '/ajax/getPhones.php?rand='.rand() => form => {key => $1, br => 'BR_TAG'},);
                 $code = $tx->res->code;
-                say Dumper $tx->{res}->{content}->{asset};
                 $pnone_str = $tx->{res}->{content}->{asset}->{content};
             }
             sleep 1;
