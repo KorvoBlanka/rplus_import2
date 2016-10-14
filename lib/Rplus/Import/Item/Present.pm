@@ -176,134 +176,115 @@ sub parse_adv {
     #найдём поля с данными о недвижимости
     $dom->find('div[class="notice-card"] div[class="fields"]')->first->children->each (sub {
 
-      #извлечение цены
-      if($_->at('strong')->text =~ /цена/i){
-          my $price = $_->at('span')->text;
-          $price =~ s/\D//g;
-          $data->{owner_price} = $price / 1000 if $price > 0;
-      }
-
-      #извлечение арендной платы
-      elsif ($_->at('strong')->text =~ /арендная плата/i){
+        #извлечение цены
+        if($_->at('strong')->text =~ /цена/i) {
+            my $price = $_->at('span')->text;
+            $price =~ s/\D//g;
+            $data->{owner_price} = $price / 1000 if $price > 0;
+        }
+        #извлечение арендной платы
+        elsif ($_->at('strong')->text =~ /арендная плата/i) {
             my $price = $_->at('span')->text;
             $price =~ s/\D//g;;
             $data->{owner_price} = $price / 1000;
-      }
-
-      #определяем новостройку
-      elsif($_->at('strong')->text =~ /вторичный рынок/i){
-          #$data->{type_code} = 'apartment_new' if ($_->at('span')->text =~ /да/i);
-      }
-
-      #парсинг адреса
-      if($_->at('strong')->text =~ /улица\/переулок/i){
-          $data->{address}= $_->at('span')->text;
-      }
-
-      #парсинг адреса
-      if($_->at('strong')->text =~ /улица/i){
-          $data->{address}= $_->at('span')->text;
-      }
-
-      #парсинг города
-      if($_->at('strong')->text =~ /населенный пункт/i){
-          $data->{locality}= $_->at('span')->text;
-      }
-
-      #парсинг количества комнат
-      elsif ($_->at('strong')->text =~ /количество комнат/i){
-          if($_->at('span')->text =~ /2-уровневая/){
-              $data->{levels_count} = 2;
-          } else{
-            $data->{rooms_count} =  0 + $_->at('span')->text;
-          }
-      }
-
-      #парсинг количества комнат аренды
-      elsif ($_->at('strong')->text =~ /объект аренды/i){
-        if($_->at('span')->text=~ /(\d).+комн/i){
-          $data->{rooms_count} =  0 + $1;
         }
-        elsif($_->at('span')->text=~ /малосем/i){
-          $data->{type_code} =  'apartment_small';
+        #определяем новостройку
+        elsif ($_->at('strong')->text =~ /вторичный рынок/i) {
+            #$data->{type_code} = 'apartment_new' if ($_->at('span')->text =~ /да/i);
         }
-      }
-
-      #парсинг планировка
-      elsif ($_->at('strong')->text =~ /планировка/i){
-          $data->{ap_scheme_id} =  get_scheme_house($_->at('span')->text);
-      }
-
-      #парсинг этажа
-      elsif ($_->at('strong')->text =~ /этаж/i){
-          $data->{floor} = 0 + $_->at('span')->text if ($_->at('span')->text =~ /\d{1,3}/);
-      }
-
-      #парсинг этажности
-      elsif ($_->at('strong')->text =~ /этажность/i){
-          $data->{floors_count} = 0 + $_->at('span')->text if ($_->at('span')->text =~ /\d{1,3}/);
-      }
-
-      #парсинг типа здания
-      elsif ($_->at('strong')->text =~ /материал стен/i){
-          $data->{house_type_id} = _get_house_type_id($_->at('span')->text);
-      }
-
-      #определение состояния
-      elsif ($_->at('strong')->text =~ /состояние/i){
-          $data->{condition_id} = _get_condition_id($_->at('span')->text);
-      }
-
-      #парсинг общей площади
-      elsif ($_->at('strong')->text =~ /площадь (общая)|(\(кв\. м\))/i){
-         my $sq =  $_->at('span')->text;
-         if($_->at('span')->text =~ /\d{1,5}/){
-           $sq=~s/,/\./;
-           $data->{square_total} = 0 + $sq;
-         }
-      }
-
-      #парсинг площади дома
-      elsif ($_->at('strong')->text =~ /площадь дома/i){
-        my $sq =  $_->at('span')->text;
-        if($_->at('span')->text =~ /\d{1,5}/){
-          $sq=~s/,/\./;
-          $data->{square_total} = 0 + $sq;
+        #парсинг адреса
+        if ($_->at('strong')->text =~ /улица\/переулок/i) {
+            $data->{address} = $_->at('span')->text;
         }
-      }
-
-      #парсинг жилой площади
-      elsif ($_->at('strong')->text =~ /площадь жилая/i){
-        my $sq =  $_->at('span')->text;
-        if($_->at('span')->text =~ /\d{1,5}/){
-          $sq=~s/,/\./;
-          $data->{square_living} = 0 + $sq;
+        #парсинг адреса
+        if ($_->at('strong')->text =~ /улица/i) {
+            $data->{address} = $_->at('span')->text;
         }
-      }
-
-      #парсинг площади кухни
-      elsif ($_->at('strong')->text =~/площадь кухни/i){
-        my $sq =  $_->at('span')->text;
-        if($_->at('span')->text =~ /\d{1,5}/){
-          $sq=~s/,/\./;
-          $data->{square_kitchen} = 0 + $sq;
+        #парсинг города
+        if ($_->at('strong')->text =~ /населенный пункт/i) {
+            $data->{locality} = $_->at('span')->text;
         }
-      }
-
-      #парсинг участка
-      elsif ($_->at('strong')->text =~ /площадь (участка)|(\(сотки\))/i){
-        my $sq =  $_->at('span')->text;
-        if($_->at('span')->text =~ /\d{1,5}/){
-          $sq=~s/,/\./;
-          $data->{square_land} = 0 + $sq;
-          $data->{square_land_type} = 'ar';
+        #парсинг количества комнат
+        elsif ($_->at('strong')->text =~ /количество комнат/i) {
+            if($_->at('span')->text =~ /2-уровневая/) {
+                $data->{levels_count} = 2;
+            } else {
+                $data->{rooms_count} =  0 + $_->at('span')->text;
+            }
         }
-      }
-
-      #определение балконов/лоджий
-      elsif ($_->at('strong')->text =~ /балкон\/лоджия/i){
-          $data->{balcony_id} = get_balcon_type($_->at('span')->text);
-      }
+        #парсинг количества комнат аренды
+        elsif ($_->at('strong')->text =~ /объект аренды/i) {
+            if ($_->at('span')->text=~ /(\d).+комн/i) {
+                $data->{rooms_count} =  0 + $1;
+            } elsif ($_->at('span')->text=~ /малосем/i) {
+                $data->{type_code} = 'apartment_small';
+            }
+        }
+        #парсинг планировка
+        elsif ($_->at('strong')->text =~ /планировка/i) {
+            $data->{ap_scheme_id} = get_scheme_house($_->at('span')->text);
+        }
+        #парсинг этажа
+        elsif ($_->at('strong')->text =~ /этаж/i) {
+            $data->{floor} = 0 + $_->at('span')->text if ($_->at('span')->text =~ /\d{1,3}/);
+        }
+        #парсинг этажности
+        elsif ($_->at('strong')->text =~ /этажность/i) {
+            $data->{floors_count} = 0 + $_->at('span')->text if ($_->at('span')->text =~ /\d{1,3}/);
+        }
+        #парсинг типа здания
+        elsif ($_->at('strong')->text =~ /материал стен/i) {
+            $data->{house_type_id} = _get_house_type_id($_->at('span')->text);
+        }
+        #определение состояния
+        elsif ($_->at('strong')->text =~ /состояние/i) {
+            $data->{condition_id} = _get_condition_id($_->at('span')->text);
+        }
+        #парсинг общей площади
+        elsif ($_->at('strong')->text =~ /площадь (общая)|(\(кв\. м\))/i) {
+            my $sq =  $_->at('span')->text;
+            if ($_->at('span')->text =~ /\d{1,5}/) {
+                $sq=~s/,/\./;
+                $data->{square_total} = 0 + $sq;
+            }
+        }
+        #парсинг площади дома
+        elsif ($_->at('strong')->text =~ /площадь дома/i) {
+            my $sq =  $_->at('span')->text;
+            if($_->at('span')->text =~ /\d{1,5}/){
+                $sq=~s/,/\./;
+                $data->{square_total} = 0 + $sq;
+            }
+        }
+        #парсинг жилой площади
+        elsif ($_->at('strong')->text =~ /площадь жилая/i) {
+            my $sq =  $_->at('span')->text;
+            if($_->at('span')->text =~ /\d{1,5}/){
+                $sq=~s/,/\./;
+                $data->{square_living} = 0 + $sq;
+            }
+        }
+        #парсинг площади кухни
+        elsif ($_->at('strong')->text =~/площадь кухни/i) {
+            my $sq =  $_->at('span')->text;
+            if($_->at('span')->text =~ /\d{1,5}/){
+                $sq=~s/,/\./;
+                $data->{square_kitchen} = 0 + $sq;
+            }
+        }
+        #парсинг участка
+        elsif ($_->at('strong')->text =~ /площадь (участка)|(\(сотки\))/i) {
+            my $sq =  $_->at('span')->text;
+            if ($_->at('span')->text =~ /\d{1,5}/) {
+                $sq=~s/,/\./;
+                $data->{square_land} = 0 + $sq;
+                $data->{square_land_type} = 'ar';
+            }
+        }
+        #определение балконов/лоджий
+        elsif ($_->at('strong')->text =~ /балкон\/лоджия/i) {
+            $data->{balcony_id} = get_balcon_type($_->at('span')->text);
+        }
     });
 
     #парсим телефон
@@ -314,10 +295,10 @@ sub parse_adv {
     }
     $data->{owner_phones}=\@phone;
 
-	  my $do = $dom->find('div[class="lightbox images"]');
-	  $do->first->find('a[target="_blank"]')->each ( sub {
-		    my $img_url = $media_data->{site_url} . $_->{'href'};
-		      push @{$data->{photo_url}}, $img_url;
+    my $do = $dom->find('div[class="lightbox images"]');
+	$do->first->find('a[target="_blank"]')->each ( sub {
+        my $img_url = $media_data->{site_url} . $_->{'href'};
+        push @{$data->{photo_url}}, $img_url;
 	});
 
     unless (scalar @{$data->{'owner_phones'}}) {
@@ -357,6 +338,11 @@ sub parse_adv {
                 }
             }
         }
+    }
+
+    unless ($data->{address}) {
+        my $title = $dom->at('div[class="content column2right-1"]')->at('h1');
+        $data->{address} = $title;
     }
 
     return $data;
