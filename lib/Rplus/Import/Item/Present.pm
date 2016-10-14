@@ -177,36 +177,41 @@ sub parse_adv {
     $dom->find('div[class="notice-card"] div[class="fields"]')->first->children->each (sub {
 
       #извлечение цены
-      if($_->at('strong')->text =~ /Цена:/){
+      if($_->at('strong')->text =~ /цена/i){
           my $price = $_->at('span')->text;
           $price =~ s/\D//g;
           $data->{owner_price} = $price / 1000 if $price > 0;
       }
 
       #извлечение арендной платы
-      elsif ($_->at('strong')->text =~ /Арендная плата/){
+      elsif ($_->at('strong')->text =~ /арендная плата/i){
             my $price = $_->at('span')->text;
             $price =~ s/\D//g;;
             $data->{owner_price} = $price / 1000;
       }
 
       #определяем новостройку
-      elsif($_->at('strong')->text =~ /Вторичный рынок:/){
+      elsif($_->at('strong')->text =~ /вторичный рынок/i){
           #$data->{type_code} = 'apartment_new' if ($_->at('span')->text =~ /да/i);
       }
 
       #парсинг адреса
-      if($_->at('strong')->text =~ /Улица\/переулок:/){
+      if($_->at('strong')->text =~ /улица\/переулок/i){
+          $data->{address}= $_->at('span')->text;
+      }
+
+      #парсинг адреса
+      if($_->at('strong')->text =~ /улица/i){
           $data->{address}= $_->at('span')->text;
       }
 
       #парсинг города
-      if($_->at('strong')->text =~ /Населенный пункт:/){
+      if($_->at('strong')->text =~ /населенный пункт/i){
           $data->{locality}= $_->at('span')->text;
       }
 
       #парсинг количества комнат
-      elsif ($_->at('strong')->text =~ /Количество комнат:/){
+      elsif ($_->at('strong')->text =~ /количество комнат/i){
           if($_->at('span')->text =~ /2-уровневая/){
               $data->{levels_count} = 2;
           } else{
@@ -215,42 +220,42 @@ sub parse_adv {
       }
 
       #парсинг количества комнат аренды
-      elsif ($_->at('strong')->text =~ /Объект аренды/){
-        if($_->at('span')->text=~ /(\d).+комн/){
+      elsif ($_->at('strong')->text =~ /объект аренды/i){
+        if($_->at('span')->text=~ /(\d).+комн/i){
           $data->{rooms_count} =  0 + $1;
         }
-        elsif($_->at('span')->text=~ /Малосем/){
+        elsif($_->at('span')->text=~ /малосем/i){
           $data->{type_code} =  'apartment_small';
         }
       }
 
       #парсинг планировка
-      elsif ($_->at('strong')->text =~ /Планировка:/){
+      elsif ($_->at('strong')->text =~ /планировка/i){
           $data->{ap_scheme_id} =  get_scheme_house($_->at('span')->text);
       }
 
       #парсинг этажа
-      elsif ($_->at('strong')->text =~ /Этаж:/){
+      elsif ($_->at('strong')->text =~ /этаж/i){
           $data->{floor} = 0 + $_->at('span')->text if ($_->at('span')->text =~ /\d{1,3}/);
       }
 
       #парсинг этажности
-      elsif ($_->at('strong')->text =~ /Этажность/){
+      elsif ($_->at('strong')->text =~ /этажность/i){
           $data->{floors_count} = 0 + $_->at('span')->text if ($_->at('span')->text =~ /\d{1,3}/);
       }
 
       #парсинг типа здания
-      elsif ($_->at('strong')->text =~ /Материал стен:/){
+      elsif ($_->at('strong')->text =~ /материал стен/i){
           $data->{house_type_id} = _get_house_type_id($_->at('span')->text);
       }
 
       #определение состояния
-      elsif ($_->at('strong')->text =~ /Состояние:/){
+      elsif ($_->at('strong')->text =~ /состояние/i){
           $data->{condition_id} = _get_condition_id($_->at('span')->text);
       }
 
       #парсинг общей площади
-      elsif ($_->at('strong')->text =~ /Площадь (общая)|(\(кв\. м\))/){
+      elsif ($_->at('strong')->text =~ /площадь (общая)|(\(кв\. м\))/i){
          my $sq =  $_->at('span')->text;
          if($_->at('span')->text =~ /\d{1,5}/){
            $sq=~s/,/\./;
@@ -259,7 +264,7 @@ sub parse_adv {
       }
 
       #парсинг площади дома
-      elsif ($_->at('strong')->text =~ /Площадь дома/){
+      elsif ($_->at('strong')->text =~ /площадь дома/i){
         my $sq =  $_->at('span')->text;
         if($_->at('span')->text =~ /\d{1,5}/){
           $sq=~s/,/\./;
@@ -268,7 +273,7 @@ sub parse_adv {
       }
 
       #парсинг жилой площади
-      elsif ($_->at('strong')->text =~ /Площадь жилая/){
+      elsif ($_->at('strong')->text =~ /площадь жилая/i){
         my $sq =  $_->at('span')->text;
         if($_->at('span')->text =~ /\d{1,5}/){
           $sq=~s/,/\./;
@@ -277,7 +282,7 @@ sub parse_adv {
       }
 
       #парсинг площади кухни
-      elsif ($_->at('strong')->text =~/Площадь кухни/){
+      elsif ($_->at('strong')->text =~/площадь кухни/i){
         my $sq =  $_->at('span')->text;
         if($_->at('span')->text =~ /\d{1,5}/){
           $sq=~s/,/\./;
@@ -286,7 +291,7 @@ sub parse_adv {
       }
 
       #парсинг участка
-      elsif ($_->at('strong')->text =~ /Площадь (участка)|(\(сотки\))/){
+      elsif ($_->at('strong')->text =~ /площадь (участка)|(\(сотки\))/i){
         my $sq =  $_->at('span')->text;
         if($_->at('span')->text =~ /\d{1,5}/){
           $sq=~s/,/\./;
@@ -296,7 +301,7 @@ sub parse_adv {
       }
 
       #определение балконов/лоджий
-      elsif ($_->at('strong')->text =~ /Балкон\/лоджия/){
+      elsif ($_->at('strong')->text =~ /балкон\/лоджия/i){
           $data->{balcony_id} = get_balcon_type($_->at('span')->text);
       }
     });
@@ -314,6 +319,45 @@ sub parse_adv {
 		    my $img_url = $media_data->{site_url} . $_->{'href'};
 		      push @{$data->{photo_url}}, $img_url;
 	});
+
+    unless (scalar @{$data->{'owner_phones'}}) {
+        my $text = $data->{source_media_text};
+        my @owner_phones;
+        for my $x (split /[ .,]/, $text) {
+            if ($x =~ /^\s*([\d-]{6,})\s*$/) {
+                push @owner_phones, $1;
+                $text =~ s/$x//;
+            }
+            if ($x =~ /^\s*8\(\d{3,4}\)([\d-]{6,})\s*$/) {
+                push @owner_phones, $1;
+                $text =~ s/$x//;
+            }
+        }
+        $data->{'owner_phones'} = \@owner_phones;
+    }
+
+    my @bp = grep { $_ && length($_) > 1 } trim(split /[,()]/, $data->{source_media_text});
+    for my $el (@bp) {
+        # Этаж/этажность
+        if ($el =~ /^(\d{1,2})\/(\d{1,2})$/) {
+            if ($2 > $1) {
+                $data->{'floor'} = $1;
+                $data->{'floors_count'} = $2;
+            }
+            next;
+        }
+
+        for my $k (keys %{$META->{'params'}->{'dict'}}) {
+            my %dict = %{$META->{'params'}->{'dict'}->{$k}};
+            my $field = delete $dict{'__field__'};
+            for my $re (keys %dict) {
+                if ($el =~ /$re/i) {
+                    $data->{$field} = $dict{$re};
+                    last;
+                }
+            }
+        }
+    }
 
     return $data;
 }
