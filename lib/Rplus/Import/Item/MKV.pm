@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -97,7 +96,7 @@ sub parse_adv {
     #извлекаем дату добавления
     my $raw_date = $dom->find('div[class="b-date-and-sell-faster"] div[class="date"]')->first->at('div')->at('p')->text;
     my $dt = _parse_date($raw_date);
-    $data->{add_date} = $dt->datetime();
+    $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
 
     $dom->find('div[class="options-wrapper"] ul li')->each (sub {
 

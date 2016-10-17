@@ -10,7 +10,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -72,7 +71,7 @@ sub parse_adv {
     # дата размещения
     my $date_str = trim($dom->find('div[class~="updateProduct"]')->first->text);
     my $dt = _parse_date($date_str);
-    $data->{add_date} = $dt->datetime();
+    $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
 
     # тип недвижимости и тип предложения
     my $breadcrumbs = lc($dom->find('nav[class~="breadcrumbs"]')->first->all_text);
@@ -128,10 +127,7 @@ sub parse_adv {
     my @owner_phones = ();
     if ($dom->find('div[class~="js-productPagePhoneLabel"]')->first) {
         my $phone_num_raw = decode_base64($dom->find('div[class~="js-productPagePhoneLabel"]')->first->attr('data-phone'));
-
-        if (my $phone_num = refine_phonenum($phone_num_raw)) {
-            push @owner_phones, $phone_num;
-        }
+        push @owner_phones, $phone_num_raw;
     } else {
         say 'no phone?'
     }

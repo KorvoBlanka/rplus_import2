@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -247,7 +246,7 @@ sub parse_adv {
         } elsif ($n->text =~ /^издание:/i) {
         } elsif ($n->text =~ /^дата размещения:/i) {
             my $dt = _parse_date($nn->all_text);
-            $data->{'add_date'} = $dt->datetime();
+            $data->{'add_date'} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
         }
     });
 

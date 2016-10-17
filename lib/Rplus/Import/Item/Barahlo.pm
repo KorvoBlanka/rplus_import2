@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -63,6 +62,12 @@ sub parse_adv {
         Referer => $media_data->{site_url}
     ]);
     my $dom = $res->dom;
+
+    my $date_str = $dom->at('table[class="show_ob"]')->at('td[class="td1"]')->at('p[class="grey"]')->text;
+    if ($date_str =~ /^(.+)\s+объявление/) {
+        my $dt = _parse_date($1);
+        $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+    }
 
     my $ad_header = $dom->find('table[class="ob_header"]')->first->at('tr')->at('td')->next->at('h1')->text;
     $data->{type_code} = _get_realty_type_code($ad_header);
@@ -165,22 +170,36 @@ sub parse_adv {
 
 sub _parse_date {
     my $date = lc(shift);
-    my $res;
 
+    my $res;
     my $dt_now = DateTime->now();
     my $year = $dt_now->year();
     my $mon = $dt_now->month();
     my $mday = $dt_now->mday();
 
-    if($date =~ /сегодня в (\d{1,2}):(\d{1,2})/){
+    if ($date =~ /сегодня в (\d{1,2}):(\d{1,2})/) {
         $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
-    } elsif($date =~ /вчера в (\d{1,2}):(\d{1,2})/){
-        $mday --;
+        if ($res > $dt_now) {
+            # substr 1 day
+            $res->subtract(days => 1);
+        }
+    } elsif ($date =~ /вчера в (\d{1,2}):(\d{1,2})/) {
         $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
+        # substr 1 day
+        $res->subtract(days => 1);
+    } elsif ($date =~ /позавчера в (\d{1,2}):(\d{1,2})/) {
+        $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
+        # substr 1 day
+        $res->subtract(days => 2);
     } elsif ($date =~ /(\d{1,2}) (\w{1,}) (\d{4}) г. в (\d{1,2}):(\d{1,2})/) {
-        my $month = _month_num($2);
-        $res = $parser->parse_datetime("$3-$month-$1 $4:$5");
+        my $a_mon = _month_num($2);
+        $res = $parser->parse_datetime("$3-$a_mon-$1 $4:$5");
+    } else {
+        $res = $dt_now;
     }
+
+    $res->set_time_zone(time_zone => 'local');
+
     return $res;
 }
 
@@ -199,9 +218,6 @@ sub _month_num {
         }
         when (/апр/) {
             return 4;
-        }
-        when (/май/) {
-            return 5;
         }
         when (/мая/) {
             return 5;

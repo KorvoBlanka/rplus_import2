@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -156,7 +155,7 @@ sub parse_adv {
     if ($date_str =~ /размещено (.+)\. объявление/i) {
         say $1;
         my $dt = _parse_date($1);
-        $data->{add_date} = $dt->datetime();
+        $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
     }
 
     # тип недвижимости и тип предложения
@@ -364,9 +363,7 @@ sub parse_adv {
     if ($mr && $mr->json) {
          my $phone_str = $mr->json->{phone};
         for my $x (split /[.,;:]/, $phone_str) {
-            if (my $phone_num = refine_phonenum($x)) {
-                push @owner_phones, $phone_num;
-            }
+            push @owner_phones, $x;
         }
     }
     $data->{'owner_phones'} = \@owner_phones;

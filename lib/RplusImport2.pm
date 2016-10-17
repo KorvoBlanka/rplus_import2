@@ -117,7 +117,7 @@ sub startup {
     #});
 
 
-    if (1) {
+    if (0) {
 
         my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
             # buisy lock
@@ -128,9 +128,17 @@ sub startup {
                 # check if we have a new task_process
                 my $task_iter = Rplus::Model::Task::Manager->get_objects_iterator(query => [delete_ts => undef]);
                 while (my $task = $task_iter->next) {
-                    say 'enqueue task ' . $task->media . ' - ' . $task->location . ' - ' . $task->url;
+                    my $q_name = $task->media;
+                    say 'enqueue task ' . $task->media . '-' . $task->location . '-' . $task->url;
 
-                    $minion->enqueue(load_item => [{media => $task->media, location => $task->location, url => $task->url}], {priority => 10});
+                    $minion->enqueue(
+                        load_item => [
+                            {media => $task->media, location => $task->location, url => $task->url}
+                        ], {
+                            priority => 10,
+                            queue => $q_name,
+                        }
+                    );
                     $task->delete_ts('now()');
                     $task->save;
                 }
@@ -151,10 +159,6 @@ sub startup {
                         my $category = $_->{url};
                         my $lock_code = $mname . '-' . $lname . '-' . $category;
 
-                        my $priority = 10;
-                        if ($mname eq 'avito' || $mname eq 'avito') {
-                            $priority += 10;
-                        }
                         my $lock = Rplus::Model::Lock::Manager->get_objects(query => [code => $lock_code])->[0];
                         unless ($lock) {
                             $lock = Rplus::Model::Lock->new(code => $lock_code);

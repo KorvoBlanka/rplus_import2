@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -157,7 +156,7 @@ sub parse_adv {
     # дата
     my $date_str = $dom->at('a[class="ajaxLink"]')->text;
     my $dt = _parse_date($date_str);
-    $data->{add_date} = $dt->datetime();
+    $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
 
     # описание
     $data->{'source_media_text'} = '';
@@ -215,9 +214,7 @@ sub parse_adv {
                         my $phone_str = $_->text;
                         $phone_str =~ s/\D//g;
                         if (length $phone_str > 0) {
-                            if (my $phone_num = refine_phonenum($phone_str)) {
-                                push @owner_phones, $phone_num;
-                            }
+                            push @owner_phones, $phone_str;
                         }
                     });
                     $retry = 0;
@@ -523,14 +520,12 @@ sub _parse_date {
 
     if ($date =~ /(\d{1,2}):(\d{1,2}), сегодня/) {
         $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
-        $res->set_time_zone($media_data->{timezone});
         if ($res > $dt_now) {
             # substr 1 day
             #$res->subtract(days => 1);
         }
     } elsif ($date =~ /(\d{1,2}):(\d{1,2}), вчера/) {
         $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
-        $res->set_time_zone($media_data->{timezone});
         $res->subtract(days => 1);
         if ($res > $dt_now) {
             # substr 1 day
@@ -539,10 +534,11 @@ sub _parse_date {
     } elsif ($date =~ /(\d{1,2}):(\d{1,2}), (\d+) (\w+)/) {
         my $a_mon = _month_num($4);
         $res = $parser->parse_datetime("$year-$a_mon-$3 $1:$2");
-        $res->set_time_zone($media_data->{timezone});
     } else {
         $res = $dt_now;
     }
+
+    $res->set_time_zone($media_data->{timezone});
 
     return $res;
 }

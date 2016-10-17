@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -153,7 +152,7 @@ sub parse_adv {
     my $data_str = trim($dom->at('div[class="notice-card"]')->at('div[class="fields-top"]')->all_text);
     if ($data_str =~ /^добавлено:\s+(.+)$/i) {
         my $dt = _parse_date($data_str);
-        $data->{add_date} = $dt->datetime();
+        $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
     }
 
     my $breadcrumbs_str = trim($dom->at('div[class="breadcrumbs"]')->all_text);
@@ -222,7 +221,7 @@ sub parse_adv {
         }
         #парсинг планировка
         elsif ($_->at('strong')->text =~ /планировка/i) {
-            $data->{ap_scheme_id} = get_scheme_house($_->at('span')->text);
+            $data->{ap_scheme_id} = _get_scheme_id($_->at('span')->text);
         }
         #парсинг этажа
         elsif ($_->at('strong')->text =~ /этаж/i) {
@@ -283,7 +282,7 @@ sub parse_adv {
         }
         #определение балконов/лоджий
         elsif ($_->at('strong')->text =~ /балкон\/лоджия/i) {
-            $data->{balcony_id} = get_balcon_type($_->at('span')->text);
+            $data->{balcony_id} = _get_balcony_id($_->at('span')->text);
         }
     });
 

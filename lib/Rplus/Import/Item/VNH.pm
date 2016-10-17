@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -127,10 +126,10 @@ sub _get_item {
 
     my $data = {
         source_media => $media_name,
-        source_url => $item_url,
+        source_url => $media_data->{site_url} . $item_url,
         type_code => 'other',
         offer_type_code => 'sale',
-        add_date => ''
+        add_date => DateTime->now()->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ")
     };
 
     parse_adv($data, $item_url);
@@ -141,13 +140,15 @@ sub _get_item {
 sub parse_adv {
     my ($data, $item_url) = @_;
 
-    my $source_url = $item_url;
+    my $source_url = $media_data->{site_url} . $item_url;
 
     my $res = $ua->get_res($source_url, [
         Host => $media_data->{host},
         Referer => $media_data->{site_url}
     ]);
     my $dom = $res->dom;
+
+
 
     my $title = $dom->at('div[class="item_full"]')->at('h1')->text;
     say $title;

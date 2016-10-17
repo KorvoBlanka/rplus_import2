@@ -9,7 +9,6 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
-use Rplus::Util::PhoneNum qw(refine_phonenum);
 
 use JSON;
 use Data::Dumper;
@@ -162,8 +161,8 @@ sub parse_adv {
     my $date_str = $obj->{added}->{strict};
     my $dt = _parse_date($date_str);
 
-    $data->{add_date} = $dt->datetime();
-    $data->{owner_phones} = [refine_phonenum($obj->{phone})];
+    $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+    $data->{owner_phones} = [$obj->{phone}];
     $data->{price} = $obj->{price}->{rur} / 1000;
 
     if ($data->{deal_type} eq 'sale') {
