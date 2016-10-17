@@ -335,7 +335,6 @@ sub parse_adv {
                 $t = trim($n->first->text);
                 # d-к квратира.
                 if ($t eq 'Комната') {
-                    $data->{'category_code'} = 'room';
                     $data->{'type_code'} = 'room';
                 } elsif ($t =~ /(\d{1,}).*?$/) {
                     $data->{'rooms_count'} = $1;
