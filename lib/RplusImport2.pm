@@ -80,11 +80,11 @@ sub startup {
     #    url => '/present/notice/view/3473868'
     #});
 
-    #Rplus::Import::ItemDispatcher::load_item({
-    #    media => 'mkv',
-    #    location => 'khv',
-    #    url => 'http://www.mirkvartir.ru/165979341/'
-    #});
+    Rplus::Import::ItemDispatcher::load_item({
+        media => 'mkv',
+        location => 'khv',
+        url => 'http://www.mirkvartir.ru/165979341/'
+    });
 
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'bn',

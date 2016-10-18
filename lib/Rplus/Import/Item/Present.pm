@@ -152,7 +152,7 @@ sub parse_adv {
     my $data_str = trim($dom->at('div[class="notice-card"]')->at('div[class="fields-top"]')->all_text);
     if ($data_str =~ /^добавлено:\s+(.+)$/i) {
         my $dt = _parse_date($data_str);
-        $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+        $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
     }
 
     my $breadcrumbs_str = trim($dom->at('div[class="breadcrumbs"]')->all_text);

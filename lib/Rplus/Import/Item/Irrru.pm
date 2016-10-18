@@ -71,7 +71,7 @@ sub parse_adv {
     # дата размещения
     my $date_str = trim($dom->find('div[class~="updateProduct"]')->first->text);
     my $dt = _parse_date($date_str);
-    $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+    $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
 
     # тип недвижимости и тип предложения
     my $breadcrumbs = lc($dom->find('nav[class~="breadcrumbs"]')->first->all_text);

@@ -96,7 +96,7 @@ sub parse_adv {
     #извлекаем дату добавления
     my $raw_date = $dom->find('div[class="b-date-and-sell-faster"] div[class="date"]')->first->at('div')->at('p')->text;
     my $dt = _parse_date($raw_date);
-    $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+    $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
 
     $dom->find('div[class="options-wrapper"] ul li')->each (sub {
 

@@ -161,7 +161,7 @@ sub parse_adv {
     my $date_str = $obj->{added}->{strict};
     my $dt = _parse_date($date_str);
 
-    $data->{add_date} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+    $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
     $data->{owner_phones} = [$obj->{phone}];
     $data->{price} = $obj->{price}->{rur} / 1000;
 

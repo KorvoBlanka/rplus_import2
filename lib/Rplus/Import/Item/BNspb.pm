@@ -246,7 +246,7 @@ sub parse_adv {
         } elsif ($n->text =~ /^издание:/i) {
         } elsif ($n->text =~ /^дата размещения:/i) {
             my $dt = _parse_date($nn->all_text);
-            $data->{'add_date'} = $dt->$dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
+            $data->{'add_date'} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
         }
     });
 
