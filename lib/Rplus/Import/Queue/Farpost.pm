@@ -100,14 +100,12 @@ sub _parse_date {
 
     if ($date =~ /(\d{1,2}):(\d{1,2}), сегодня/) {
         $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
-        $res->set_time_zone($media_data->{timezone});
         if ($res > $dt_now) {
             # substr 1 day
             #$res->subtract(days => 1);
         }
     } elsif ($date =~ /(\d{1,2}):(\d{1,2}), вчера/) {
         $res = $parser->parse_datetime("$year-$mon-$mday $1:$2");
-        $res->set_time_zone($media_data->{timezone});
         $res->subtract(days => 1);
         if ($res > $dt_now) {
             # substr 1 day
@@ -116,10 +114,11 @@ sub _parse_date {
     } elsif ($date =~ /(\d{1,2}):(\d{1,2}), (\d+) (\w+)/) {
         my $a_mon = _month_num($4);
         $res = $parser->parse_datetime("$year-$a_mon-$3 $1:$2");
-        $res->set_time_zone($media_data->{timezone});
     } else {
         $res = $dt_now;
     }
+
+    $res->set_time_zone($media_data->{timezone});
 
     return $res;
 }

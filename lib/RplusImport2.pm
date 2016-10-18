@@ -72,7 +72,7 @@ sub startup {
     #    media => 'barahlo',
     #    location => 'khv',
     #    url => 'http://habarovsk.barahla.net/realty/217/8493651.html'
-    #});
+    #q});
 
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'present_site',
@@ -117,8 +117,7 @@ sub startup {
     #});
 
 
-    if (0) {
-
+    if (1) {
         my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
             # buisy lock
             my $lock = Rplus::Model::Lock::Manager->get_objects(query => [code => 'tasks_cycle'])->[0];

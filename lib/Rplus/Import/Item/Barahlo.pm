@@ -198,7 +198,7 @@ sub _parse_date {
         $res = $dt_now;
     }
 
-    $res->set_time_zone(time_zone => 'local');
+    $res->set_time_zone('local');
 
     return $res;
 }
