@@ -65,6 +65,27 @@
                 {url => '/vladivostok/zemelnye_uchastki/sdam'},
                 {url => '/vladivostok/kommercheskaya_nedvizhimost/sdam'},
             ],
+        },
+        kms => {
+            site_url => 'http://www.avito.ru',
+            host => 'www.avito.ru',
+            page_count => 2,
+            pause_category => 120,
+            pause_item => 30,
+
+            source_list => [
+                {url => '/komsomolsk-na-amure/kvartiry/prodam'},
+                {url => '/komsomolsk-na-amure/komnaty/prodam'},
+                {url => '/komsomolsk-na-amure/doma_dachi_kottedzhi/prodam'},
+                {url => '/komsomolsk-na-amure/zemelnye_uchastki/prodam'},
+                {url => '/komsomolsk-na-amure/kommercheskaya_nedvizhimost/prodam'},
+
+                {url => '/komsomolsk-na-amure/kvartiry/sdam'},
+                {url => '/komsomolsk-na-amure/komnaty/sdam'},
+                {url => '/komsomolsk-na-amure/doma_dachi_kottedzhi/sdam'},
+                {url => '/komsomolsk-na-amure/zemelnye_uchastki/sdam'},
+                {url => '/komsomolsk-na-amure/kommercheskaya_nedvizhimost/sdam'},
+            ],
         }
     },
 ###### - avito - end
@@ -105,6 +126,37 @@
         vld => {
             site_url => 'http://vladivostok.irr.ru',
             host => 'vladivostok.irr.ru',
+            page_count => 2,
+            pause => 5,
+            offer_count_limit => 3,
+
+            source_list => [
+                {url => '/real-estate/rooms-sale/', type => ''},
+                {url => '/real-estate/apartments-sale/'},
+                {url => '/real-estate/out-of-town/houses/'},
+                {url => '/real-estate/commercial-sale/offices/'},
+                {url => '/real-estate/commercial-sale/misc/'},
+                {url => '/real-estate/commercial-sale/production-warehouses/'},
+                {url => '/real-estate/commercial-sale/retail/'},
+                {url => '/real-estate/commercial-sale/eating/'},
+                {url => '/real-estate/commercial-sale/houses/'},
+                {url => '/real-estate/garage/'},
+
+                {url => '/real-estate/rooms-rent/'},
+                {url => '/real-estate/rent/'},
+                {url => '/real-estate/out-of-town-rent/'},
+                {url => '/real-estate/commercial/offices/'},
+                {url => '/real-estate/commercial/misc/'},
+                {url => '/real-estate/commercial/production-warehouses/'},
+                {url => '/real-estate/commercial/retail/'},
+                {url => '/real-estate/commercial/eating/'},
+                {url => '/real-estate/commercial/houses/'},
+                {url => '/real-estate/garage-rent/'},
+            ]
+        },
+        kms => {
+            site_url => 'http://komsomolsk.irr.ru',
+            host => 'komsomolsk.irr.ru',
             page_count => 2,
             pause => 5,
             offer_count_limit => 3,
@@ -188,6 +240,32 @@
                 {url => '/vladivostok/realty/rent_houses/'},
                 {url => '/vladivostok/realty/land-rent/'},
                 {url => '/vladivostok/realty/rent_business_realty/'},
+            ],
+        },
+        kms => {
+            site_url => 'http://www.farpost.ru',
+            host => 'www.farpost.ru',
+            referer => 'http://www.farpost.ru/komsomolsk-na-amure/',
+            page_count => 2,
+            pause => 5,
+            locality => 'Владивосток',
+            timezone => '+1000',
+
+            source_list => [
+                {url => '/komsomolsk-na-amure/realty/sell_flats/'},
+                {url => '/komsomolsk-na-amure/realty/change_flats/'},
+                {url => '/komsomolsk-na-amure/realty/sell_houses/'},
+                {url => '/komsomolsk-na-amure/realty/change_houses/'},
+                {url => '/komsomolsk-na-amure/realty/land/'},
+                {url => '/komsomolsk-na-amure/realty/dacha/'},
+                {url => '/komsomolsk-na-amure/realty/garage/'},
+                {url => '/komsomolsk-na-amure/realty/sell_business_realty/'},
+
+                {url => '/komsomolsk-na-amure/realty/rent_flats/'},
+                {url => '/komsomolsk-na-amure/realty/rent-apartment/'},
+                {url => '/komsomolsk-na-amure/realty/rent_houses/'},
+                {url => '/komsomolsk-na-amure/realty/land-rent/'},
+                {url => '/komsomolsk-na-amure/realty/rent_business_realty/'},
             ],
         },
     },
