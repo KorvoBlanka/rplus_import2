@@ -66,9 +66,9 @@ sub _get_url_list {
 
         my $offers;
         $dom->find('script')->each (sub {
-          if ($_->all_text =~ 'window._offers = ({.+});') {
-            $offers =  from_json($1);
-          }
+            if ($_->all_text =~ 'window._offers = ({.+});') {
+                $offers =  from_json($1);
+            }
         });
 
         return [] unless $offers;
@@ -78,12 +78,16 @@ sub _get_url_list {
         foreach my $key (keys %objs) {
             my $obj = $objs{$key};
 
-            my $item_url = $obj->{link};
-            my $item_id = $obj->{id};
-            my $date_str = $obj->{added}->{strict};
-            my $ts = _parse_date($date_str);
+            if ($obj->{id}) {
+                my $item_url = $obj->{link};
+                my $item_id = $obj->{id};
+                my $date_str = $obj->{added}->{strict};
+                my $ts = _parse_date($date_str);
 
-            push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
+                push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
+            } else {
+                say Dumper $obj;
+            }
         }
 
         #$dom->find('div[class~="catalog-list"] div[class~="item"]')->each (sub {

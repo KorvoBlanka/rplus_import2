@@ -10,7 +10,7 @@ use Rplus::Model::Task::Manager;
 
 use Rplus::Import::QueueDispatcher;
 use Rplus::Import::ItemDispatcher;
-use Rplus::Util::Config;
+use Rplus::Util::Config qw(get_config);
 
 
 use Data::Dumper;
@@ -47,10 +47,10 @@ sub startup {
     #Rplus::Import::QueueDispatcher::enqueue('present_site', 'khv', '/present/notice/index/rubric/kvartiry-prodaja/');
     #Rplus::Import::QueueDispatcher::enqueue('mkv', 'khv', 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/');
     #Rplus::Import::QueueDispatcher::enqueue('bn', 'msk', '/sale/city/flats/');
-    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/kvartiry/sdam');
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'kja', '/krasnoyarsk/kvartiry/sdam');
     #Rplus::Import::QueueDispatcher::enqueue('irrru', 'khv', '/real-estate/rooms-sale/');
     #Rplus::Import::QueueDispatcher::enqueue('farpost', 'khv', '/khabarovsk/realty/sell_flats/');
-    #Rplus::Import::QueueDispatcher::enqueue('cian', 'msk', '/kupit-1-komnatnuyu-kvartiru/');
+    #Rplus::Import::QueueDispatcher::enqueue('cian', 'msk', '/snyat-1-komnatnuyu-kvartiru/');
     #Rplus::Import::QueueDispatcher::enqueue('barahlo', 'khv', '/realty/217/1/');
     #Rplus::Import::QueueDispatcher::enqueue('vnh', 'khv');
     #Rplus::Import::QueueDispatcher::enqueue('bnspb', 'spb', '/zap_fl.phtml');
@@ -112,10 +112,24 @@ sub startup {
 
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'avito',
-    #    location => 'khv',
-    #    url => '/habarovsk/kvartiry/3-k_kvartira_82.4_m_725_et._844345679'
+    #    location => 'kja',
+    #    url => '/krasnoyarsk/kvartiry/2-k_kvartira_45_m_25_et._642346545'
     #});
 
+    if (0) {
+        my $medias = get_config('medias')->{media_list};
+        foreach my $media_name (keys %{$medias}) {
+            my $locations = $medias->{$media_name};
+            foreach my $location_name (keys %{$locations}) {
+                my $conf = $locations->{$location_name};
+                foreach (@{$conf->{source_list}}) {
+                    say $media_name . ' ' . $location_name;
+                    say $_->{url};
+                    Rplus::Import::QueueDispatcher::enqueue($media_name, $location_name, $_->{url});
+                }
+            }
+        }
+    }
 
     if (1) {
         my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
@@ -147,7 +161,7 @@ sub startup {
         });
 
         my $timer_id_2 = Mojo::IOLoop->recurring(30 => sub {
-            my $load_list = Rplus::Util::Config::get_config('load_list')->{load_list};
+            my $load_list = get_config('load_list')->{load_list};
             foreach my $mname (keys %{$load_list}) {
                 my $loc_list = $load_list->{$mname};
                 foreach my $lname (@$loc_list) {

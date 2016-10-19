@@ -42,13 +42,17 @@ package Rplus::Class::UserAgent {
                 'Accept-Language' => 'ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4',
             });
 
-            if ($t->res->code == 200) {
-                $res = $t->res;
-                last;
-            } elsif ($t->res->code == 404) {
-                last;
+            if ($t->res && $t->res->code) {
+                if ($t->res->code == 200) {
+                    $res = $t->res;
+                    last;
+                } elsif ($t->res->code == 404) {
+                    last;
+                }
+            } else {
+                say $url;
+                say Dumper $t;
             }
-
             sleep 3;
         }
 
