@@ -1,0 +1,13 @@
+
+
+screen -S cian ./script/minion_worker.pl minion worker -q cian -j 15
+screen -S avito ./script/minion_worker.pl minion worker -q avito -j 15
+screen -S irr ./script/minion_worker.pl minion worker -q irr -j 15
+screen -S farpost ./script/minion_worker.pl minion worker -q farpost -j 15
+screen -S bn ./script/minion_worker.pl minion worker -q bn -j 15
+screen -S bnspb ./script/minion_worker.pl minion worker -q bnspb -j 15
+screen -S mkv ./script/minion_worker.pl minion worker -q mkv -j 15
+screen -S barahlo ./script/minion_worker.pl minion worker -q barahlo -j 15
+screen -S present_site ./script/minion_worker.pl minion worker -q present_site -j 15
+screen -S vnh ./script/minion_worker.pl minion worker -q vnh -j 15
+screen -S queue ./script/minion_worker.pl minion worker -j 12

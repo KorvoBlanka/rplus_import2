@@ -1,0 +1,101 @@
+% layout 'default';
+% title 'Errors';
+
+% content_for header => begin
+<style type="text/css">
+    table {
+
+    }
+
+    th, td {
+        border-bottom: 1px solid #ddd;
+        padding: 15px;
+        text-align: left;
+        font-weight: 200;
+    }
+</style>
+
+<script type="application/javascript">
+    var _first_id;
+    var _page = 0;
+    function listErrors() {
+
+        console.log(_page);
+
+        if (_page == 0) {
+            $('#errTableBody').html('');
+        }
+        _page += 1;
+
+        $.ajax({
+            type: "POST",
+            url: "/api/error/list",
+            data: {
+                page: _page,
+                first_id: _first_id,
+            },
+        })
+        .done(function (data, textStatus, jqXHR) {
+            console.log(data);
+            var list = data.list;
+
+            var xhtml = '';
+            for (var i = 0; i < list.length; i++) {
+                var er = list[i];
+
+                xhtml += '<tr>';
+
+                xhtml += '<th>';
+                xhtml += moment(er.ts).format('DD.MM.YY hh:mm');
+                xhtml += '</th>';
+
+                var er_meta = JSON.parse(er.metadata);
+                xhtml += '<th>';
+                xhtml += er.task_type;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += er.media;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += er.location;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += er_meta;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += er.message;
+                xhtml += '</th>';
+
+                xhtml += '</tr>';
+            }
+
+            $('#errTableBody').append(xhtml);
+        });
+    }
+
+
+    $(document).ready(function() {
+    $('#loadMore').on('click', function (e) {
+        e.preventDefault();
+        listErrors();
+    });
+
+    listErrors();
+    });
+</script>
+% end
+
+<table>
+    <thead>
+    </thead>
+    <tbody id="errTableBody">
+    </tbody>
+</table>
+
+<div style="text-align: center">
+    <button id="loadMore" style="display: inline-block;">MORE</button>
+</div>

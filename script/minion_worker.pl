@@ -41,17 +41,17 @@ app->minion->add_task(enqueue_task => sub {
         Rplus::Import::QueueDispatcher::enqueue($media, $location, $category);
         1;
     } or do {
-        my $m = {
-            task => 'enqueue_task',
-            task_arg => {
-                media => $media,
-                location => $location,
-                category => $category
-            },
-            err_msg => $@
-        };
-        my $err = Rplus::Model::Error->new(metadata => to_json($m));
+        my $err_msg = $@;
+
+        my $err = Rplus::Model::Error->new (
+            task_type => 'enqueue_task',
+            media => $media,
+            location => $location,
+            message => $err_msg,
+            metadata => to_json({category => $category})
+        );
         $err->save;
+        $job->fail('error ' . $err->id);
     };
 
     # release lock
@@ -67,12 +67,15 @@ app->minion->add_task(load_item => sub {
         Rplus::Import::ItemDispatcher::load_item($task);
         1;
     } or do {
-        my $m = {
-            task => 'load_item',
-            task_arg => $task,
-            err_msg => $@
-        };
-        my $err = Rplus::Model::Error->new(metadata => to_json($m));
+        my $err_msg = $@;
+
+        my $err = Rplus::Model::Error->new(
+            task_type => 'load_item',
+            media => $task->{media},
+            location => $task->{location},
+            message => $err_msg,
+            metadata => to_json($task)
+        );
         $err->save;
         $job->fail('error ' . $err->id);
     };

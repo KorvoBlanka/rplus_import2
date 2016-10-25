@@ -40,6 +40,7 @@ sub startup {
     # Normal route to controller
     #$r->get('/')->to('example#welcome');
     $r->get('/')->to(template => 'main/index');
+    $r->get('/:controller/:action')->to(action => 'index');
 
     # API namespace
     $r->route('/api/:controller/:action')->to(namespace => 'RplusImport2::Controller::API');
@@ -116,7 +117,7 @@ sub startup {
     #    url => '/krasnoyarsk/kvartiry/2-k_kvartira_45_m_25_et._642346545'
     #});
 
-    if (0) {
+    if (1) {
         my $medias = get_config('medias')->{media_list};
         foreach my $media_name (keys %{$medias}) {
             my $locations = $medias->{$media_name};

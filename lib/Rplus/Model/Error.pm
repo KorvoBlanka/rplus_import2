@@ -8,9 +8,13 @@ __PACKAGE__->meta->setup(
     table   => 'errors',
 
     columns => [
-        id       => { type => 'serial', not_null => 1 },
-        ts       => { type => 'timestamp with time zone', default => 'now()', not_null => 1 },
-        metadata => { type => 'scalar', not_null => 1 },
+        id        => { type => 'serial', not_null => 1 },
+        ts        => { type => 'timestamp with time zone', default => 'now()', not_null => 1 },
+        metadata  => { type => 'scalar', not_null => 1 },
+        media     => { type => 'varchar' },
+        location  => { type => 'varchar' },
+        task_type => { type => 'varchar' },
+        message   => { type => 'varchar' },
     ],
 
     primary_key_columns => [ 'id' ],
