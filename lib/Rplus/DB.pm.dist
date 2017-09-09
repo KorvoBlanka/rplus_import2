@@ -10,7 +10,7 @@ __PACKAGE__->register_db(
     domain   => 'development',
     type     => 'main',
     driver   => 'Pg',
-    database => 'rplus_import_dev',
+    database => 'rplus_import_t',
     host     => '127.0.0.1',
     port     => 5432,
     username => 'raven',

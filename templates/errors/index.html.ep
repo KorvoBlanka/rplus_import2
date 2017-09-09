@@ -1,5 +1,6 @@
 % layout 'default';
 % title 'Errors';
+% use Rplus::Util::Config qw(get_config);
 
 % content_for header => begin
 <style type="text/css">
@@ -18,9 +19,14 @@
 <script type="application/javascript">
     var _first_id;
     var _page = 0;
-    function listErrors() {
+    function listErrors(page) {
 
+        _page = page;
         console.log(_page);
+
+        var task_type = $('#taskTypeSelect').val();
+        var media = $('#mediaSelect').val();
+        var location = $('#locationSelect').val();
 
         if (_page == 0) {
             $('#errTableBody').html('');
@@ -33,6 +39,9 @@
             data: {
                 page: _page,
                 first_id: _first_id,
+                task_type: task_type,
+                media: media,
+                location: location
             },
         })
         .done(function (data, textStatus, jqXHR) {
@@ -63,7 +72,11 @@
                 xhtml += '</th>';
 
                 xhtml += '<th>';
-                xhtml += er_meta;
+                if (er.task_type == 'load_item') {
+                    xhtml += er_meta.url;
+                } else {
+                    xhtml += er_meta.category;
+                }
                 xhtml += '</th>';
 
                 xhtml += '<th>';
@@ -73,21 +86,59 @@
                 xhtml += '</tr>';
             }
 
+            $('#errCount').text(data.count);
             $('#errTableBody').append(xhtml);
         });
     }
 
 
     $(document).ready(function() {
-    $('#loadMore').on('click', function (e) {
-        e.preventDefault();
-        listErrors();
-    });
+        $('#loadMore').on('click', function (e) {
+            e.preventDefault();
+            listErrors(_page);
+        });
 
-    listErrors();
+        $('select').on('change', function (e) {
+            listErrors(0);
+        });
+
+        $('#refresh').click(function() {
+            listErrors(0);
+        });
+
+        listErrors(0);
     });
 </script>
 % end
+
+<select id="taskTypeSelect">
+    <option>all</option>
+    <option>load_item</option>
+    <option>enqueue_task</option>
+</select>
+
+<select id="mediaSelect">
+    <option>all</option>
+    % my $medias = get_config('medias')->{media_list};
+    % my $locations = {};
+    % foreach my $media_name (keys %{$medias}) {
+    %   my $ls = $medias->{$media_name};
+    %   foreach my $location_name (keys %{$ls}) {
+    %       $locations->{$location_name} = 1;
+    %   }
+    <option><%= $media_name %></option>
+    % }
+</select>
+
+<select id="locationSelect">
+    <option>all</option>
+    % foreach my $location_name (keys %{$locations}) {
+    <option><%= $location_name %></option>
+    % }
+</select>
+
+<button id="refresh">R</button>
+<span id="errCount"></span>
 
 <table>
     <thead>

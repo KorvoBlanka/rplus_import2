@@ -6,8 +6,8 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
+use Rplus::Util::Task qw(add_task);
 
-use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
 
 use Data::Dumper;
@@ -30,14 +30,18 @@ sub enqueue_tasks {
 
         my $eid = $_->{id} . '_0';
 
-        say $_->{url};
-
-        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
-            say $_->{url};
-            #Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
+        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, location => $location, eid => $eid])) {
+            say 'added' . $_->{url};
+            Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
+            add_task(
+                'load_item',
+                {media => $media_name, location => $location, url => $_->{url}},
+                $media_name
+            );
             #Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
         }
     }
+    say 'done';
 }
 
 sub _get_category {
@@ -58,30 +62,27 @@ sub _get_url_list {
     my ($category_page, $page_count, $pause) = @_;
     my @url_list;
 
-    say $category_page;
-
     for(my $i = 1; $i <= $page_count; $i ++) {
 
         my $page_url = $category_page . '?start=' . 50 * ($i - 1);
 
         my $res = $ua->get_res($page_url, []);
-        next unless $res;
-        my $dom = $res->dom;
+        if ($res && $res->dom) {
+            my $dom = $res->dom;
 
-        $dom->find('input[name="sID[]"]')->each(sub {
-            my $item_id = $_->{value};
-            my $item_url;
+            $dom->find('input[name="sID[]"]')->each(sub {
+                my $item_id = $_->{value};
+                my $item_url;
 
-            if ($_->parent->at('a')) {
-                $item_url = $_->parent->at('a')->{href};
-            } else {
-                $item_url = $_->parent->parent->at('td[title="Детальная информация об объекте"]')->at('a')->{href};
-            }
-            say $item_id;
-            say $item_url;
+                if ($_->parent->at('a')) {
+                    $item_url = $_->parent->at('a')->{href};
+                } else {
+                    $item_url = $_->parent->parent->at('td[title="Детальная информация об объекте"]')->at('a')->{href};
+                }
 
-            push @url_list, {id => $item_id, url => $item_url, ts => ''};
-        });
+                push @url_list, {id => $item_id, url => $item_url, ts => ''};
+            });
+        }
 
         sleep $pause;
     }

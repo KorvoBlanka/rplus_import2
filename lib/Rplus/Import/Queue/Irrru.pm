@@ -6,8 +6,8 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
+use Rplus::Util::Task qw(add_task);
 
-use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
 
 use Data::Dumper;
@@ -30,12 +30,18 @@ sub enqueue_tasks {
 
         my $eid = _make_eid($_->{id}, $_->{ts});
 
-        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
-            say $_->{url};
+        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, location => $location, eid => $eid])) {
+            say 'added ' . $_->{url};
             Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
-            Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
+            add_task(
+                'load_item',
+                {media => $media_name, location => $location, url => $_->{url}},
+                $media_name
+            );
+            #Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
         }
     }
+    say 'done';
 }
 
 sub _get_category {
@@ -61,21 +67,21 @@ sub _get_url_list {
         my $page_url = $i == 1 ? $category_page : $category_page . "page$i/";
 
         my $res = $ua->get_res($page_url, [Host => $media_data->{host}]);
-        next unless $res;
-        my $dom = $res->dom;
+        if ($res && $res->dom) {
+            my $dom = $res->dom;
 
-        $dom->find('div[class~="listing__item"][class~="js-productBlock"]')->each( sub {
+            $dom->find('div[class~="listing__item"][class~="js-productBlock"]')->each( sub {
 
-            my $item_id = $_->attr('data-item-id');
-            my $item_url = $_->at('a[class~="listing__itemTitle"]')->attr('href');
+                my $item_id = $_->attr('data-item-id');
+                my $item_url = $_->at('a[class~="listing__itemTitle"]')->attr('href');
 
-            my $date_str = $_->at('span[class~="listing__itemDate"]')->text;
-            my $ts = _parse_date($date_str);
+                my $date_str = $_->at('span[class~="listing__itemDate"]')->text;
+                my $ts = _parse_date($date_str);
 
-            push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
+                push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
 
-        });
-
+            });
+        }
         unless ($i + 1 == $page_count) {
             sleep $pause;
         }

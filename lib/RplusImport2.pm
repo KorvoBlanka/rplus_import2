@@ -5,13 +5,12 @@ use Minion;
 use Mojo::IOLoop;
 use Rplus::Modern;
 use Rplus::Class::Media;
-use Rplus::Model::Lock::Manager;
 use Rplus::Model::Task::Manager;
 
 use Rplus::Import::QueueDispatcher;
 use Rplus::Import::ItemDispatcher;
 use Rplus::Util::Config qw(get_config);
-
+use URI::Encode qw(uri_encode uri_decode);
 
 use Data::Dumper;
 
@@ -26,13 +25,14 @@ sub startup {
     #$self->plugin('PODRenderer');
     my $config = $self->plugin('Config' => {file => 'app.conf'});
 
-    my $minion = Minion->new(Pg => 'postgresql://raven:raven!12345@localhost/rplus_import_dev');
+    my $minion = Minion->new(Pg => 'postgresql://raven:raven!12345@localhost/rplus_import');
 
     say '<<<<<<<<<<------------------------------------------------->>>>>>>>>>';
 
     #$minion->reset;
     say Dumper $minion->stats;
 
+    $minion->backoff(sub {return 300;});
 
     # Router
     my $r = $self->routes;
@@ -47,14 +47,24 @@ sub startup {
 
     #Rplus::Import::QueueDispatcher::enqueue('present_site', 'khv', '/present/notice/index/rubric/kvartiry-prodaja/');
     #Rplus::Import::QueueDispatcher::enqueue('mkv', 'khv', 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/');
-    #Rplus::Import::QueueDispatcher::enqueue('bn', 'msk', '/sale/city/flats/');
-    #Rplus::Import::QueueDispatcher::enqueue('avito', 'kja', '/krasnoyarsk/kvartiry/sdam');
-    #Rplus::Import::QueueDispatcher::enqueue('irrru', 'khv', '/real-estate/rooms-sale/');
+    #Rplus::Import::QueueDispatcher::enqueue('mkv', 'khv', 'http://arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/');
+
+        #Rplus::Import::QueueDispatcher::enqueue('bn', 'msk', '/sale/city/flats/');
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/kvartiry/prodam');
+
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/kvartiry/prodam');
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/komnaty/prodam');
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/doma_dachi_kottedzhi/prodam');
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/zemelnye_uchastki/prodam');
+    #Rplus::Import::QueueDispatcher::enqueue('avito', 'khv', '/habarovsk/kommercheskaya_nedvizhimost/prodam');
+
+
+    #Rplus::Import::QueueDispatcher::enqueue('irrru', 'khv', '/real-estate/apartments-sale/');
     #Rplus::Import::QueueDispatcher::enqueue('farpost', 'khv', '/khabarovsk/realty/sell_flats/');
     #Rplus::Import::QueueDispatcher::enqueue('cian', 'msk', '/snyat-1-komnatnuyu-kvartiru/');
     #Rplus::Import::QueueDispatcher::enqueue('barahlo', 'khv', '/realty/217/1/');
     #Rplus::Import::QueueDispatcher::enqueue('vnh', 'khv');
-    #Rplus::Import::QueueDispatcher::enqueue('bnspb', 'spb', '/zap_fl.phtml');
+        #Rplus::Import::QueueDispatcher::enqueue('bnspb', 'spb', '/zap_fl.phtml');
 
 
     #Rplus::Import::ItemDispatcher::load_item({
@@ -84,7 +94,7 @@ sub startup {
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'mkv',
     #    location => 'khv',
-    #    url => 'http://www.mirkvartir.ru/165979341/'
+    #    url => 'http://arenda.mirkvartir.ru/176605200/'
     #});
 
     #Rplus::Import::ItemDispatcher::load_item({
@@ -114,10 +124,11 @@ sub startup {
     #Rplus::Import::ItemDispatcher::load_item({
     #    media => 'avito',
     #    location => 'kja',
-    #    url => '/krasnoyarsk/kvartiry/2-k_kvartira_45_m_25_et._642346545'
+    #    url => '/krasnoyarsk/komnaty/komnata_12_m_v_1-k_79_et._773986281'
+    #    #url => '/habarovsk/kvartiry/2-k_kvartira_50_m_29_et._863465287'
     #});
 
-    if (1) {
+    if (0) {
         my $medias = get_config('medias')->{media_list};
         foreach my $media_name (keys %{$medias}) {
             my $locations = $medias->{$media_name};
@@ -133,62 +144,43 @@ sub startup {
     }
 
     if (1) {
-        my $timer_id_1 = Mojo::IOLoop->recurring(1 => sub {
-            # buisy lock
-            my $lock = Rplus::Model::Lock::Manager->get_objects(query => [code => 'tasks_cycle'])->[0];
-            unless ($lock->state) {
-                $lock->state(1);
-                $lock->save;
-                # check if we have a new task_process
-                my $task_iter = Rplus::Model::Task::Manager->get_objects_iterator(query => [delete_ts => undef]);
-                while (my $task = $task_iter->next) {
-                    my $q_name = $task->media;
-                    say 'enqueue task ' . $task->media . '-' . $task->location . '-' . $task->url;
-
-                    $minion->enqueue(
-                        load_item => [
-                            {media => $task->media, location => $task->location, url => $task->url}
-                        ], {
-                            priority => 10,
-                            queue => $q_name,
-                        }
-                    );
-                    $task->delete_ts('now()');
-                    $task->save;
-                }
-                $lock->state(0);
-                $lock->save;
-            }
-        });
-
-        my $timer_id_2 = Mojo::IOLoop->recurring(30 => sub {
+        my $timer_id_2 = Mojo::IOLoop->recurring(1800 => sub {
             my $load_list = get_config('load_list')->{load_list};
             foreach my $mname (keys %{$load_list}) {
                 my $loc_list = $load_list->{$mname};
-                foreach my $lname (@$loc_list) {
-                    my $mc = Rplus::Class::Media->instance();
-                    my $media_data = $mc->get_media($mname, $lname);
 
-                    foreach (@{$media_data->{source_list}}) {
-                        my $category = $_->{url};
-                        my $lock_code = $mname . '-' . $lname . '-' . $category;
+                # check queue if its empty - enq tasks
+                # but we can lost some adv so fck it
+                #my $rec_count = Rplus::Model::MinionJob::Manager->get_objects_count(
+                #    query => [
+                #        state => 'inactive',
+                #        task => 'load_item',
+                #        queue => $mname,
+                #    ],
+                #);
+                #if ($rec_count < $TASK_LIMIT) {
+                    foreach my $lname (@$loc_list) {
+                        my $mc = Rplus::Class::Media->instance();
+                        my $media_data = $mc->get_media($mname, $lname);
 
-                        my $lock = Rplus::Model::Lock::Manager->get_objects(query => [code => $lock_code])->[0];
-                        unless ($lock) {
-                            $lock = Rplus::Model::Lock->new(code => $lock_code);
-                            $lock->save;
-                        }
-                        # unless lock
+                        foreach (@{$media_data->{source_list}}) {
+                            my $category = $_->{url};
 
-                        unless ($lock->state) {
-                            say 'enqueue enq task ' . $lock_code;
-                            # aq lock and enq task, task will release lock upon completion
-                            $lock->state(1);
-                            $lock->save;
-                            $minion->enqueue(enqueue_task => [{media => $mname, location => $lname, category => $category, lock_code => $lock_code}]);
+                            say 'enqueue enq task ' . $mname . ' - ' . $lname . ' - ' . $category;
+
+                            $minion->enqueue(
+                                enqueue_task => [
+                                    {media => $mname, location => $lname, category => $category}
+                                ], {
+                                    attempts => 3,
+                                    priority => 10,
+                                    queue => $mname,
+                                }
+                            );
+
                         }
                     }
-                }
+                #}
             }
         });
     }

@@ -19,7 +19,7 @@ use Rplus::Import::ItemDispatcher;
 use Data::Dumper;
 
 
-plugin Minion => {Pg => 'postgresql://raven:raven!12345@localhost/rplus_import_dev'};
+plugin Minion => {Pg => 'postgresql://raven:raven!12345@localhost/rplus_import'};
 
 app->minion->add_task(enqueue_task => sub {
     my ($job, @args) = @_;
@@ -28,14 +28,6 @@ app->minion->add_task(enqueue_task => sub {
     my $category = $args[0]->{category};
     my $lock_code = $args[0]->{lock_code};
 
-    my $lock = Rplus::Model::Lock::Manager->get_objects(query => [code => $lock_code])->[0];
-    # it MUST be locked already, cannot die if not (cause we are in worker, and it will not show error if died)
-    unless ($lock->state) {
-        say 'WTF?!?!? not locked ' . $lock_code;
-    }
-
-    $lock->state(1);
-    $lock->save;
 
     eval {
         Rplus::Import::QueueDispatcher::enqueue($media, $location, $category);
@@ -52,11 +44,8 @@ app->minion->add_task(enqueue_task => sub {
         );
         $err->save;
         $job->fail('error ' . $err->id);
+        #$job->retry({delay => 60});
     };
-
-    # release lock
-    $lock->state(0);
-    $lock->save;
 });
 
 app->minion->add_task(load_item => sub {
@@ -78,6 +67,7 @@ app->minion->add_task(load_item => sub {
         );
         $err->save;
         $job->fail('error ' . $err->id);
+        #$job->retry({delay => 60});
     };
 });
 

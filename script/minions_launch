@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+for i in vnh avito barahlo bnspb farpost present_site mkv cian irr bn
+do
+    SC_NAME="$i"
+    echo $SC_NAME
+    screen -d -S $SC_NAME -m ./minion_worker.pl minion worker -q $SC_NAME -j 20
+done
+exit 0

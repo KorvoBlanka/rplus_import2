@@ -6,8 +6,8 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
+use Rplus::Util::Task qw(add_task);
 
-use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
 
 use JSON;
@@ -31,12 +31,18 @@ sub enqueue_tasks {
 
         my $eid = _make_eid($_->{id}, $_->{ts});
 
-        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
-            say $_->{url};
+        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, location => $location, eid => $eid])) {
+            say 'added' . $_->{url};
             Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
-            Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
+            add_task(
+                'load_item',
+                {media => $media_name, location => $location, url => $_->{url}},
+                $media_name
+            );
+            #Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
         }
     }
+    say 'done';
 }
 
 sub _get_category {
@@ -60,49 +66,34 @@ sub _get_url_list {
     for(my $i = 1; $i <= $page_count; $i ++) {
 
         my $res = $ua->get_res($category_page . '?p=' . $i, []);
-        next unless $res;
-        my $dom = $res->dom;
+        if ($res && $res->dom) {
+            my $dom = $res->dom;
 
 
-        my $offers;
-        $dom->find('script')->each (sub {
-            if ($_->all_text =~ 'window._offers = ({.+});') {
-                $offers =  from_json($1);
-            }
-        });
+            my $offers;
+            $dom->find('script')->each (sub {
+                if ($_->all_text =~ 'window._offers = ({.+});') {
+                    $offers = from_json($1);
+                }
+            });
 
-        return [] unless $offers;
+            return [] unless $offers;
 
-        my %objs = values %$offers;
+            my %objs = values %$offers;
 
-        foreach my $key (keys %objs) {
-            my $obj = $objs{$key};
+            foreach my $key (keys %objs) {
+                my $obj = $objs{$key};
 
-            if ($obj->{id}) {
-                my $item_url = $obj->{link};
-                my $item_id = $obj->{id};
-                my $date_str = $obj->{added}->{strict};
-                my $ts = _parse_date($date_str);
+                if ($obj->{id}) {
+                    my $item_url = $obj->{link};
+                    my $item_id = $obj->{id};
+                    my $date_str = $obj->{added}->{strict};
+                    my $ts = _parse_date($date_str);
 
-                push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
-            } else {
-                say Dumper $obj;
+                    push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
+                }
             }
         }
-
-        #$dom->find('div[class~="catalog-list"] div[class~="item"]')->each (sub {
-
-        #    my $do = $_->find('div[class="description"]')->first;
-
-        #    my $item_url = $do->at('h3 a')->{href};
-        #    my $item_id = substr $_->{id}, 1;
-        #    my $date_str = $do->find('div[class~="date"]')->first->all_text;
-
-        #    my $ts = _parse_date($date_str);
-
-        #    push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
-
-        #});
 
         unless ($i + 1 == $page_count) {
             sleep $pause;

@@ -6,8 +6,8 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
+use Rplus::Util::Task qw(add_task);
 
-use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
 
 use Data::Dumper;
@@ -30,14 +30,18 @@ sub enqueue_tasks {
 
         my $eid = $_->{id} . '_0';
 
-        say $_->{url};
-
-        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
-            say $_->{url};
+        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, location => $location, eid => $eid])) {
+            say 'added' . $_->{url};
             Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
-            Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
+            add_task(
+                'load_item',
+                {media => $media_name, location => $location, url => $_->{url}},
+                $media_name
+            );
+            #Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
         }
     }
+    say 'done';
 }
 
 sub _get_category {
@@ -58,30 +62,29 @@ sub _get_url_list {
     my ($category_page, $page_count, $pause) = @_;
     my @url_list;
 
-    say $category_page;
-
     for(my $i = 1; $i <= $page_count; $i ++) {
 
         my $page_url = $category_page . '?start=' . 50 * ($i - 1);
 
         my $res = $ua->get_res($page_url, []);
-        next unless $res;
-        my $dom = $res->dom;
+        if ($res && $res->dom) {
+            my $dom = $res->dom;
 
-        $dom->find('div[class~="result"] tr')->each (sub {
+            $dom->find('div[class~="result"] tr')->each (sub {
 
-            return unless $_->at('a');
+                return unless $_->at('a');
 
-            my $item_url = $_->at('a')->attr('href');
+                my $item_url = $_->at('a')->attr('href');
 
-            my $item_id;
-            if ($item_url =~ /(\d+)/) {
-                $item_id = $1;
-            }
+                my $item_id;
+                if ($item_url =~ /(\d+)/) {
+                    $item_id = $1;
+                }
 
-            push @url_list, {id => $item_id, url => $item_url, ts => ''};
+                push @url_list, {id => $item_id, url => $item_url, ts => ''};
 
-        });
+            });
+        }
 
         sleep $pause;
     }

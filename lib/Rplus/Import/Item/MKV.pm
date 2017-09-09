@@ -65,14 +65,46 @@ sub parse_adv {
 
     my $header = $dom->find('h1[class="offer-title"]')->first->at('small');
 
-    #Уточняем тип недвижимости
+    if ($header =~ /аренда/i) {
+        $data->{offer_type_code} = 'rent';
+    }
+
     given ($header) {
+        when(/\sкомнат/i) {
+            $data->{type_code} = 'room';
+        }
+        when (/квартир/i) {
+            $data->{type_code} = 'apartment';
+        }
+        when(/\sкомнат/i) {
+            $data->{type_code} = 'room';
+        }
+        when (/дом/i) {
+            $data->{type_code} = 'house';
+        }
         when (/дач/i) {
             $data->{type_code} = 'dacha';
         }
         when (/коттедж/i) {
             $data->{type_code} = 'cottage';
         }
+
+        when (/офис/i){
+            $data->{type_code} = 'office_place';
+        }
+        when (/псн/i){
+            $data->{type_code} = 'gpurpose_place';
+        }
+        when (/склад/i){
+            $data->{type_code} = 'warehouse_place';
+        }
+        when (/торгового помещения/i){
+            $data->{type_code} = 'market_place';
+        }
+        when (/земли/i){
+            $data->{type_code} = 'land';
+        }
+
         when (/студи/i){
             $data->{room_scheme_id} = 1;
         }

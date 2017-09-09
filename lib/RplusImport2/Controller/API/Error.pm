@@ -11,17 +11,25 @@ use Data::Dumper;
 sub list {
     my $self = shift;
 
-    my $page = $self->param('page') | 0;
-    my $first_id = $self->param('first_id') | 0;
+    my $page = $self->param('page');
+    my $first_id = $self->param('first_id');
     my $per_page = 50;
 
-    my $res = {
-        list => [],
-        count => 0
-    };
+    my $task_type = $self->param('task_type') || 'all';
+    my $media = $self->param('media') || 'all';
+    my $location = $self->param('location') || 'all';
+
 
     my $query = [];
     push @{$query}, id => {lt => $first_id} if $first_id;
+    push @{$query}, task_type => $task_type if $task_type ne 'all';
+    push @{$query}, media => $media if $media ne 'all';
+    push @{$query}, location => $location if $location ne 'all';
+
+    my $res = {
+        list => [],
+        count => Rplus::Model::Error::Manager->get_objects_count(query => $query)
+    };
 
     my $err_iter = Rplus::Model::Error::Manager->get_objects_iterator(query => $query,
         page => $page,
@@ -39,7 +47,6 @@ sub list {
             message => $err->message,
             metadata => $err->metadata
         };
-        $res->{count} += 1;
         push @{$res->{list}}, $r;
     }
 

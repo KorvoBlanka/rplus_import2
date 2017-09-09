@@ -4,6 +4,8 @@
       <title><%= title %></title>
       <script type="application/javascript" src="/jquery-3.1.1.min.js"></script>
       <script type="application/javascript" src="/moment.min.js"></script>
+      <script type="application/javascript" src="/jqTree/tree.jquery.js"></script>
+      <link rel="stylesheet" href="/jqTree/jqtree.css">
       <%= content_for 'header' %>
   </head>
   <body><%= content %></body>

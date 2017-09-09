@@ -126,7 +126,7 @@ sub _get_item {
 
     my $data = {
         source_media => $media_name,
-        source_url => $item_url,
+        source_url => $media_data->{site_url} . $item_url,
         type_code => 'other',
         offer_type_code => 'sale',
         add_date => ''
@@ -165,7 +165,7 @@ sub parse_adv {
     $data->{owner_phones} = [$obj->{phone}];
     $data->{price} = $obj->{price}->{rur} / 1000;
 
-    if ($data->{deal_type} eq 'sale') {
+    if ($obj->{deal_type} eq 'sale') {
         $data->{offer_type_code} = 'sale';
     } else {
         $data->{offer_type_code} = 'rent';
@@ -256,73 +256,75 @@ sub parse_adv {
 
     $t = $dom->at('table[class~="object_descr_props"]');
 
-    $t->find('tr')->each(sub {
-        my $h = $_->at('th')->text;
-        return unless $_->at('td');
-        my $d = $_->at('td')->text;
+    if ($t) {
+        $t->find('tr')->each(sub {
+            my $h = $_->at('th')->text;
+            return unless $_->at('td');
+            my $d = $_->at('td')->text;
 
-        given($h) {
-            when (/этаж/i) {
-                if ($d =~ /(\d+) \/ (\d+)/) {
-                    $data->{floor} = $1;
-                    $data->{floors_count} = $2;
+            given($h) {
+                when (/этаж/i) {
+                    if ($d =~ /(\d+) \/ (\d+)/) {
+                        $data->{floor} = $1;
+                        $data->{floors_count} = $2;
+                    }
                 }
-            }
-            when (/площадь дома/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_total} = $1;
+                when (/площадь дома/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_total} = $1;
+                    }
                 }
-            }
-            when (/площадь участка/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_land} = $1;
-                    $data->{square_land_type} = 'ar';
+                when (/площадь участка/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_land} = $1;
+                        $data->{square_land_type} = 'ar';
+                    }
                 }
-            }
-            when (/общая площадь/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_total} = $1;
+                when (/общая площадь/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_total} = $1;
+                    }
                 }
-            }
-            when (/площадь комнат/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_total} = $1;
+                when (/площадь комнат/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_total} = $1;
+                    }
                 }
-            }
-            when (/жилая площадь/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_living} = $1;
+                when (/жилая площадь/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_living} = $1;
+                    }
                 }
-            }
-            when (/площадь кухни/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_kitchen} = $1;
+                when (/площадь кухни/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_kitchen} = $1;
+                    }
                 }
-            }
-            when (/площадь/i) {
-                if ($d =~ /(\d{1,}).*?/) {
-                    $data->{square_total} = $1;
+                when (/площадь/i) {
+                    if ($d =~ /(\d{1,}).*?/) {
+                        $data->{square_total} = $1;
+                    }
                 }
-            }
-            when (/количество этажей/i) {
-                if ($d =~ /(\d+)/) {
-                    $data->{floors_count} = $1;
+                when (/количество этажей/i) {
+                    if ($d =~ /(\d+)/) {
+                        $data->{floors_count} = $1;
+                    }
                 }
-            }
-            when (/санузел/i) {
+                when (/санузел/i) {
 
-            }
-            when (/балкон/i) {
+                }
+                when (/балкон/i) {
 
-            }
-            when (/ванная комната/i) {
+                }
+                when (/ванная комната/i) {
 
-            }
-            when (/ремонт/i) {
+                }
+                when (/ремонт/i) {
 
+                }
             }
-        }
-    });
+        });
+    }
 
     my $sn = $dom->at('h3[class="realtor-card__title"] a');
     if ($sn) {

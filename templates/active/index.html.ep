@@ -1,0 +1,94 @@
+% layout 'default';
+% title 'Active';
+% use Rplus::Util::Config qw(get_config);
+
+% content_for header => begin
+<style type="text/css">
+    table {
+
+    }
+
+    th, td {
+        border-bottom: 1px solid #ddd;
+        padding: 15px;
+        text-align: left;
+        font-weight: 200;
+    }
+</style>
+
+<script type="application/javascript">
+
+    function loadActive() {
+
+        $.ajax({
+            type: "POST",
+            url: "/api/statistic/get_active",
+            data: {},
+        })
+        .done(function (data, textStatus, jqXHR) {
+            console.log(data);
+
+            var list = data.list;
+
+            var xhtml = '';
+            for (var i = 0; i < list.length; i++) {
+                var r = list[i];
+
+                xhtml += '<tr>';
+
+                xhtml += '<th>';
+                xhtml += r.task; //moment(er.ts).format('DD.MM.YY hh:mm');
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += r.queue;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += r.created;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += r.started;
+                xhtml += '</th>';
+
+                xhtml += '<th>';
+                xhtml += r.retries;
+                xhtml += '</th>';
+
+                //var er_meta = JSON.parse(er.metadata);
+                xhtml += '<th>';
+                xhtml += r.args;
+                xhtml += '</th>';
+
+                xhtml += '</tr>';
+            }
+
+            $('#activeCount').text(data.count);
+            $('#activeTableBody').html(xhtml);
+
+        });
+    }
+
+
+    $(document).ready(function() {
+
+        $('#refresh').click(function() {
+            loadActive();
+        });
+
+        loadActive();
+    });
+</script>
+% end
+
+
+<button id="refresh">R</button>
+<span id="activeCount"></span>
+
+<table>
+    <thead>
+    </thead>
+    <tbody id="activeTableBody">
+    </tbody>
+</table>

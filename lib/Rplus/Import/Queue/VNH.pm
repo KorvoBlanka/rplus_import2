@@ -6,8 +6,8 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
+use Rplus::Util::Task qw(add_task);
 
-use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
 
 use File::Basename;
@@ -51,12 +51,18 @@ sub enqueue_tasks {
 
             my $eid = _make_eid($_->{id}, $_->{ts});
 
-            unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
-                say $_->{url};
+            unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, location => $location, eid => $eid])) {
+                say 'added ' . $_->{url};
                 Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
-                Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
+                add_task(
+                    'load_item',
+                    {media => $media_name, location => $location, url => $_->{url}},
+                    $media_name
+                );
+                #Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
             }
         }
+        say 'done';
     }
 }
 
@@ -78,25 +84,24 @@ sub _get_url_list {
     for(my $i = 1; $i <= $page_count; $i ++) {
 
         my $page_url = $media_data->{site_url} . '/filter/' . $i . $category_page;
-        say 'get ' . $page_url;
         my $res = $ua->get_res($page_url, []);
-        next unless $res;
-        my $dom = $res->dom;
+        if ($res && $res->dom) {
+            my $dom = $res->dom;
 
-        $dom->find('div[class="teaser teaser_filter "]')->each (sub {
+            $dom->find('div[class="teaser teaser_filter "]')->each (sub {
 
-            my $item_id;
-            my $item_url = $media_data->{site_url} . $_->at('div')->at('div')->at('a')->{href};
+                my $item_id;
+                my $item_url = $media_data->{site_url} . $_->at('div')->at('div')->at('a')->{href};
 
-            if ($item_url =~ /\/(\d+)$/) {
-                $item_id = $1;
-            }
-            my $date_str = $_->find('div[class="meta_top"]')->first->text;
-            my $dt = _parse_date($date_str);
+                if ($item_url =~ /\/(\d+)$/) {
+                    $item_id = $1;
+                }
+                my $date_str = $_->find('div[class="meta_top"]')->first->text;
+                my $dt = _parse_date($date_str);
 
-            push @url_list, {id => $item_id, url => $item_url, ts => $dt};
-        });
-
+                push @url_list, {id => $item_id, url => $item_url, ts => $dt};
+            });
+        }
         unless ($i + 1 == $page_count) {
             sleep $pause;
         }

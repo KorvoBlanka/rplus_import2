@@ -4,10 +4,9 @@
 
     avito => {
         msk => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -25,10 +24,9 @@
             ],
         },
         spb => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -46,10 +44,9 @@
             ],
         },
         kja => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -67,10 +64,9 @@
             ],
         },
         khv => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -88,10 +84,9 @@
             ],
         },
         vld => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -109,10 +104,9 @@
             ],
         },
         kms => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -130,10 +124,9 @@
             ],
         },
         nahodka => {
-            site_url => 'http://www.avito.ru',
+            site_url => 'https://www.avito.ru',
             host => 'www.avito.ru',
-            page_count => 2,
-            pause_category => 120,
+            page_count => 1,
             pause_item => 30,
 
             source_list => [
@@ -158,9 +151,10 @@
         msk => {
             site_url => 'http://irr.ru',
             host => 'irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+0300',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -189,9 +183,10 @@
         spb => {
             site_url => 'http://saint-petersburg.irr.ru',
             host => 'saint-petersburg.irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+0300',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -220,9 +215,10 @@
         kja => {
             site_url => 'http://krasnoyarsk.irr.ru',
             host => 'krasnoyarsk.irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+0600',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -251,9 +247,10 @@
         khv => {
             site_url => 'http://khabarovsk.irr.ru',
             host => 'khabarovsk.irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+1000',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -282,9 +279,10 @@
         vld => {
             site_url => 'http://vladivostok.irr.ru',
             host => 'vladivostok.irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+1000',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -313,9 +311,10 @@
         kms => {
             site_url => 'http://komsomolsk.irr.ru',
             host => 'komsomolsk.irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+1000',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -344,9 +343,10 @@
         nahodka => {
             site_url => 'http://nahodka.irr.ru',
             host => 'nahodka.irr.ru',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             offer_count_limit => 3,
+            timezone => '+1000',
 
             source_list => [
                 {url => '/real-estate/rooms-sale/', type => ''},
@@ -381,7 +381,7 @@
             site_url => 'http://www.farpost.ru',
             host => 'www.farpost.ru',
             referer => 'http://www.farpost.ru/khabarovsk/',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             locality => 'Хабаровск',
             timezone => '+1000',
@@ -407,7 +407,7 @@
             site_url => 'http://www.farpost.ru',
             host => 'www.farpost.ru',
             referer => 'http://www.farpost.ru/vladivostok/',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
             locality => 'Владивосток',
             timezone => '+1000',
@@ -433,9 +433,9 @@
             site_url => 'http://www.farpost.ru',
             host => 'www.farpost.ru',
             referer => 'http://www.farpost.ru/komsomolsk-na-amure/',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
-            locality => 'Владивосток',
+            locality => 'Комсомольск-на-Амуре',
             timezone => '+1000',
 
             source_list => [
@@ -459,9 +459,9 @@
             site_url => 'http://www.farpost.ru',
             host => 'www.farpost.ru',
             referer => 'http://www.farpost.ru/nakhodka/',
-            page_count => 2,
+            page_count => 5,
             pause => 5,
-            locality => 'Хабаровск',
+            locality => 'Находка',
             timezone => '+1000',
 
             source_list => [
@@ -490,7 +490,7 @@
             site_url => 'http://cian.ru',
             host => 'cian.ru',
             pause => 5,
-            page_count => 3,
+            page_count => 5,
             follow_redirects => 1,
 
             source_list => [
@@ -541,7 +541,7 @@
             site_url => 'http://spb.cian.ru',
             host => 'spb.cian.ru',
             pause => 5,
-            page_count => 3,
+            page_count => 5,
             follow_redirects => 1,
 
             source_list => [
@@ -592,7 +592,7 @@
             site_url => 'http://krasnoyarsk.cian.ru',
             host => 'krasnoyarsk.cian.ru',
             pause => 5,
-            page_count => 3,
+            page_count => 5,
             follow_redirects => 1,
 
             source_list => [
@@ -750,7 +750,7 @@
         msk => {
             site_url => 'mirkvartir.ru',
             host => '',
-            page_count => 3,
+            page_count => 5,
             pause => 5,
             source_list => [
                 {url => 'http://www.mirkvartir.ru/Москва/'},
@@ -782,129 +782,161 @@
         spb => {
             site_url => 'mirkvartir.ru',
             host => '',
-            page_count => 3,
+            page_count => 5,
             pause => 5,
             source_list => [
                 {url => 'http://www.mirkvartir.ru/Санкт-Петербург/'},
                 {url => 'http://www.mirkvartir.ru/Санкт-Петербург/Комнаты/'},
-                {url => 'http://www.dom.mirkvartir.ru/Санкт-Петербург/'},
-                {url => 'http://www.dom.mirkvartir.ru/Санкт-Петербург/Таунхаусы/'},
-                {url => 'http://www.dom.mirkvartir.ru/Санкт-Петербург/Участки/'},
-                {url => 'http://www.cre.mirkvartir.ru/Санкт-Петербург/Офисы/'},
-                {url => 'http://www.cre.mirkvartir.ru/Санкт-Петербург/Помещения+свободного+назначения/'},
-                {url => 'http://www.cre.mirkvartir.ru/Санкт-Петербург/Склады/'},
-                {url => 'http://www.cre.mirkvartir.ru/Санкт-Петербург/Торговые+помещения/'},
-                {url => 'http://www.zem.mirkvartir.ru/Санкт-Петербург/'},
+                {url => 'http://dom.mirkvartir.ru/Санкт-Петербург/'},
+                {url => 'http://dom.mirkvartir.ru/Санкт-Петербург/Таунхаусы/'},
+                {url => 'http://dom.mirkvartir.ru/Санкт-Петербург/Участки/'},
+                {url => 'http://cre.mirkvartir.ru/Санкт-Петербург/Офисы/'},
+                {url => 'http://cre.mirkvartir.ru/Санкт-Петербург/Помещения+свободного+назначения/'},
+                {url => 'http://cre.mirkvartir.ru/Санкт-Петербург/Склады/'},
+                {url => 'http://cre.mirkvartir.ru/Санкт-Петербург/Торговые+помещения/'},
+                {url => 'http://zem.mirkvartir.ru/Санкт-Петербург/'},
 
-                {url => 'http://www.arenda.mirkvartir.ru/Санкт-Петербург/'},
-                {url => 'http://www.arenda.mirkvartir.ru/Санкт-Петербург/Посуточно'},
-                {url => 'http://www.arenda.mirkvartir.ru/Санкт-Петербург/Комнаты/'},
+                {url => 'http://arenda.mirkvartir.ru/Санкт-Петербург/'},
+                {url => 'http://arenda.mirkvartir.ru/Санкт-Петербург/Посуточно'},
+                {url => 'http://arenda.mirkvartir.ru/Санкт-Петербург/Комнаты/'},
 
-                {url => 'http://www.arendadoma.mirkvartir.ru/Санкт-Петербург/'},
-                {url => 'http://www.arendadoma.mirkvartir.ru/Санкт-Петербург/Таунхаусы/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Санкт-Петербург/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Санкт-Петербург/Таунхаусы/'},
 
-                {url => 'http://www.arendacre.mirkvartir.ru/Санкт-Петербург/Офисы/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Санкт-Петербург/Помещения+свободного+назначения/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Санкт-Петербург/Склады/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Санкт-Петербург/Торговые+помещения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Санкт-Петербург/Офисы/'},
+                {url => 'http://arendacre.mirkvartir.ru/Санкт-Петербург/Помещения+свободного+назначения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Санкт-Петербург/Склады/'},
+                {url => 'http://arendacre.mirkvartir.ru/Санкт-Петербург/Торговые+помещения/'},
 
-                {url => 'http://www.new.mirkvartir.ru/Санкт-Петербург/'},
+                {url => 'http://new.mirkvartir.ru/Санкт-Петербург/'},
             ]
         },
         kja => {
             site_url => 'mirkvartir.ru',
             host => '',
-            page_count => 3,
+            page_count => 5,
             pause => 5,
             source_list => [
                 {url => 'http://www.mirkvartir.ru/Красноярский+край/Красноярск/'},
                 {url => 'http://www.mirkvartir.ru/Красноярский+край/Красноярск/Комнаты/'},
-                {url => 'http://www.dom.mirkvartir.ru/Красноярский+край/Красноярск/'},
-                {url => 'http://www.dom.mirkvartir.ru/Красноярский+край/Красноярск/Таунхаусы/'},
-                {url => 'http://www.dom.mirkvartir.ru/Красноярский+край/Красноярск/Участки/'},
-                {url => 'http://www.cre.mirkvartir.ru/Красноярский+край/Красноярск/Офисы/'},
-                {url => 'http://www.cre.mirkvartir.ru/Красноярский+край/Красноярск/Помещения+свободного+назначения/'},
-                {url => 'http://www.cre.mirkvartir.ru/Красноярский+край/Красноярск/Склады/'},
-                {url => 'http://www.cre.mirkvartir.ru/Красноярский+край/Красноярск/Торговые+помещения/'},
-                {url => 'http://www.zem.mirkvartir.ru/Красноярский+край/Красноярск/'},
+                {url => 'http://dom.mirkvartir.ru/Красноярский+край/Красноярск/'},
+                {url => 'http://dom.mirkvartir.ru/Красноярский+край/Красноярск/Таунхаусы/'},
+                {url => 'http://dom.mirkvartir.ru/Красноярский+край/Красноярск/Участки/'},
+                {url => 'http://cre.mirkvartir.ru/Красноярский+край/Красноярск/Офисы/'},
+                {url => 'http://cre.mirkvartir.ru/Красноярский+край/Красноярск/Помещения+свободного+назначения/'},
+                {url => 'http://cre.mirkvartir.ru/Красноярский+край/Красноярск/Склады/'},
+                {url => 'http://cre.mirkvartir.ru/Красноярский+край/Красноярск/Торговые+помещения/'},
+                {url => 'http://zem.mirkvartir.ru/Красноярский+край/Красноярск/'},
 
-                {url => 'http://www.arenda.mirkvartir.ru/Красноярский+край/Красноярск/'},
-                {url => 'http://www.arenda.mirkvartir.ru/Красноярский+край/Красноярск/Посуточно'},
-                {url => 'http://www.arenda.mirkvartir.ru/Красноярский+край/Красноярск/Комнаты/'},
+                {url => 'http://arenda.mirkvartir.ru/Красноярский+край/Красноярск/'},
+                {url => 'http://arenda.mirkvartir.ru/Красноярский+край/Красноярск/Посуточно'},
+                {url => 'http://arenda.mirkvartir.ru/Красноярский+край/Красноярск/Комнаты/'},
 
-                {url => 'http://www.arendadoma.mirkvartir.ru/Красноярский+край/Красноярск/'},
-                {url => 'http://www.arendadoma.mirkvartir.ru/Красноярский+край/Красноярск/Таунхаусы/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Красноярский+край/Красноярск/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Красноярский+край/Красноярск/Таунхаусы/'},
 
-                {url => 'http://www.arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Офисы/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Помещения+свободного+назначения/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Склады/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Торговые+помещения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Офисы/'},
+                {url => 'http://arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Помещения+свободного+назначения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Склады/'},
+                {url => 'http://arendacre.mirkvartir.ru/Красноярский+край/Красноярск/Торговые+помещения/'},
 
-                {url => 'http://www.new.mirkvartir.ru/Москва/'},
+                {url => 'http://new.mirkvartir.ru/Москва/'},
+            ]
+        },
+        kms => {
+            site_url => 'mirkvartir.ru',
+            host => '',
+            page_count => 5,
+            pause => 5,
+            source_list => [
+                {url => 'http://www.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/'},
+                {url => 'http://www.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Комнаты/'},
+                {url => 'http://dom.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/'},
+                {url => 'http://dom.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Таунхаусы/'},
+                {url => 'http://dom.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Участки/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Офисы/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Помещения+свободного+назначения/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Склады/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Торговые+помещения/'},
+                {url => 'http://zem.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/'},
+
+                {url => 'http://arenda.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/'},
+                {url => 'http://arenda.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Посуточно'},
+                {url => 'http://arenda.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Комнаты/'},
+
+                {url => 'http://arendadoma.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Таунхаусы/'},
+
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Офисы/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Помещения+свободного+назначения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Склады/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/Торговые+помещения/'},
+
+                {url => 'http://new.mirkvartir.ru/Хабаровский+край/Комсомольск-на-Амуре/'},
             ]
         },
         khv => {
             site_url => 'mirkvartir.ru',
             host => '',
-            page_count => 3,
+            page_count => 5,
             pause => 5,
             source_list => [
                 {url => 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
                 {url => 'http://www.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/'},
-                {url => 'http://www.dom.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
-                {url => 'http://www.dom.mirkvartir.ru/Хабаровский+край/Хабаровск/Таунхаусы/'},
-                {url => 'http://www.dom.mirkvartir.ru/Хабаровский+край/Хабаровск/Участки/'},
-                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Офисы/'},
-                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Помещения+свободного+назначения/'},
-                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Склады/'},
-                {url => 'http://www.cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Торговые+помещения/'},
-                {url => 'http://www.zem.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://dom.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://dom.mirkvartir.ru/Хабаровский+край/Хабаровск/Таунхаусы/'},
+                {url => 'http://dom.mirkvartir.ru/Хабаровский+край/Хабаровск/Участки/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Офисы/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Помещения+свободного+назначения/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Склады/'},
+                {url => 'http://cre.mirkvartir.ru/Хабаровский+край/Хабаровск/Торговые+помещения/'},
+                {url => 'http://zem.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
 
-                {url => 'http://www.arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
-                {url => 'http://www.arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/Посуточно'},
-                {url => 'http://www.arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/'},
+                {url => 'http://arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/Посуточно'},
+                {url => 'http://arenda.mirkvartir.ru/Хабаровский+край/Хабаровск/Комнаты/'},
 
-                {url => 'http://www.arendadoma.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
-                {url => 'http://www.arendadoma.mirkvartir.ru/Хабаровский+край/Хабаровск/Таунхаусы/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Хабаровский+край/Хабаровск/Таунхаусы/'},
 
-                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Офисы/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Помещения+свободного+назначения/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Склады/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Торговые+помещения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Офисы/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Помещения+свободного+назначения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Склады/'},
+                {url => 'http://arendacre.mirkvartir.ru/Хабаровский+край/Хабаровск/Торговые+помещения/'},
 
-                {url => 'http://www.new.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://new.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
             ]
         },
         vld => {
             site_url => 'mirkvartir.ru',
             host => '',
-            page_count => 3,
+            page_count => 5,
             pause => 5,
             source_list => [
                 {url => 'http://www.mirkvartir.ru/Приморский+край/Владивосток/'},
                 {url => 'http://www.mirkvartir.ru/Приморский+край/Владивосток/Комнаты/'},
-                {url => 'http://www.dom.mirkvartir.ru/Приморский+край/Владивосток/'},
-                {url => 'http://www.dom.mirkvartir.ru/Приморский+край/Владивосток/Таунхаусы/'},
-                {url => 'http://www.dom.mirkvartir.ru/Приморский+край/Владивосток/Участки/'},
-                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Офисы/'},
-                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Помещения+свободного+назначения/'},
-                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Склады/'},
-                {url => 'http://www.cre.mirkvartir.ru/Приморский+край/Владивосток/Торговые+помещения/'},
-                {url => 'http://www.zem.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://dom.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://dom.mirkvartir.ru/Приморский+край/Владивосток/Таунхаусы/'},
+                {url => 'http://dom.mirkvartir.ru/Приморский+край/Владивосток/Участки/'},
+                {url => 'http://cre.mirkvartir.ru/Приморский+край/Владивосток/Офисы/'},
+                {url => 'http://cre.mirkvartir.ru/Приморский+край/Владивосток/Помещения+свободного+назначения/'},
+                {url => 'http://cre.mirkvartir.ru/Приморский+край/Владивосток/Склады/'},
+                {url => 'http://cre.mirkvartir.ru/Приморский+край/Владивосток/Торговые+помещения/'},
+                {url => 'http://zem.mirkvartir.ru/Приморский+край/Владивосток/'},
 
-                {url => 'http://www.arenda.mirkvartir.ru/Приморский+край/Владивосток/'},
-                {url => 'http://www.arenda.mirkvartir.ru/Приморский+край/Владивосток/Посуточно'},
-                {url => 'http://www.arenda.mirkvartir.ru/Приморский+край/Владивосток/Комнаты/'},
+                {url => 'http://arenda.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://arenda.mirkvartir.ru/Приморский+край/Владивосток/Посуточно'},
+                {url => 'http://arenda.mirkvartir.ru/Приморский+край/Владивосток/Комнаты/'},
 
-                {url => 'http://www.arendadoma.mirkvartir.ru/Приморский+край/Владивосток/'},
-                {url => 'http://www.arendadoma.mirkvartir.ru/Приморский+край/Владивосток/Таунхаусы/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Приморский+край/Владивосток/'},
+                {url => 'http://arendadoma.mirkvartir.ru/Приморский+край/Владивосток/Таунхаусы/'},
 
-                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Офисы/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Помещения+свободного+назначения/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Склады/'},
-                {url => 'http://www.arendacre.mirkvartir.ru/Приморский+край/Владивосток/Торговые+помещения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Приморский+край/Владивосток/Офисы/'},
+                {url => 'http://arendacre.mirkvartir.ru/Приморский+край/Владивосток/Помещения+свободного+назначения/'},
+                {url => 'http://arendacre.mirkvartir.ru/Приморский+край/Владивосток/Склады/'},
+                {url => 'http://arendacre.mirkvartir.ru/Приморский+край/Владивосток/Торговые+помещения/'},
 
-                {url => 'http://www.new.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
+                {url => 'http://new.mirkvartir.ru/Хабаровский+край/Хабаровск/'},
             ]
         }
     },
@@ -916,7 +948,7 @@
             pause => 5,
             site_url => 'http://msk.barahla.net',
             host => '',
-            page_count => 3,
+            page_count => 5,
 
             source_list => [
                 {url => '/realty/217/1/'},
@@ -940,7 +972,7 @@
             pause => 5,
             site_url => 'http://spb.barahla.net',
             host => '',
-            page_count => 3,
+            page_count => 5,
 
             source_list => [
                 {url => '/realty/217/1/'},
@@ -964,7 +996,7 @@
             pause => 5,
             site_url => 'http://krasnoyarsk.barahla.net',
             host => '',
-            page_count => 3,
+            page_count => 5,
 
             source_list => [
                 {url => '/realty/217/1/'},
@@ -988,7 +1020,7 @@
             pause => 5,
             site_url => 'http://habarovsk.barahla.net',
             host => '',
-            page_count => 3,
+            page_count => 5,
 
             source_list => [
                 {url => '/realty/217/1/'},
@@ -1012,7 +1044,7 @@
             pause => 5,
             site_url => 'http://vl.barahla.net',
             host => '',
-            page_count => 3,
+            page_count => 5,
 
             source_list => [
                 {url => '/realty/217/1/'},
@@ -1040,7 +1072,7 @@
         khv => {
             pause => 5,
             site_url => 'http://present-dv.ru',
-            page_count => 3,
+            page_count => 5,
             host => '',
 
             source_list => [

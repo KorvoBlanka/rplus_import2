@@ -33,6 +33,8 @@ package Rplus::Class::UserAgent {
         while ($retry > 0) {
             $retry -= 1;
 
+            say $url;
+
             my $t = $self->{ua}->get($url, {
                 @{$headers},
                 'Connection' => 'keep-alive',

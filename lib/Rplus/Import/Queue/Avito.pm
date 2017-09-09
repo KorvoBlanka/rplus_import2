@@ -6,8 +6,8 @@ use Rplus::Modern;
 use Rplus::Class::Media;
 use Rplus::Class::Interface;
 use Rplus::Class::UserAgent;
+use Rplus::Util::Task qw(add_task);
 
-use Rplus::Model::Task::Manager;
 use Rplus::Model::History::Manager;
 
 use Data::Dumper;
@@ -30,12 +30,18 @@ sub enqueue_tasks {
 
         my $eid = _make_eid($_->{id}, $_->{ts});
 
-        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, eid => $eid])) {
-            say $_->{url};
+        unless (Rplus::Model::History::Manager->get_objects_count(query => [media => $media_name, location => $location, eid => $eid])) {
+            say 'added ' . $_->{url};
             Rplus::Model::History->new(media => $media_name, location => $location, eid => $eid)->save;
-            Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
+            add_task(
+                'load_item',
+                {media => $media_name, location => $location, url => $_->{url}},
+                $media_name
+            );
+            #Rplus::Model::Task->new(url => $_->{url}, media => $media_name, location => $location)->save;
         }
     }
+    say 'done';
 }
 
 sub _get_category {
@@ -46,7 +52,7 @@ sub _get_category {
 
     my @url_list;
 
-    my $t = _get_url_list($media_data->{site_url} . $category, $media_data->{page_count}, $media_data->{pause_item});
+    my $t = _get_url_list($media_data->{site_url} . $category, $media_data->{page_count}, 5);
     push @url_list, @{$t};
 
     return \@url_list;
@@ -59,23 +65,23 @@ sub _get_url_list {
     for(my $i = 1; $i <= $page_count; $i ++) {
 
         my $res = $ua->get_res($category_page . '?p=' . $i, []);
-        next unless $res;
-        my $dom = $res->dom;
+        if ($res && $res->dom) {
+            my $dom = $res->dom;
 
-        $dom->find('div[class~="catalog-list"] div[class~="item"]')->each (sub {
+            $dom->find('div[class~="catalog-list"] div[class~="item"]')->each (sub {
 
-            my $do = $_->find('div[class="description"]')->first;
+                my $do = $_->find('div[class="description"]')->first;
 
-            my $item_url = $do->at('h3 a')->{href};
-            my $item_id = substr $_->{id}, 1;
-            my $date_str = $do->find('div[class~="date"]')->first->all_text;
+                my $item_url = $do->at('h3 a')->{href};
+                my $item_id = substr $_->{id}, 1;
+                my $date_str = $do->find('div[class~="date"]')->first->all_text;
 
-            my $ts = _parse_date($date_str);
+                my $ts = _parse_date($date_str);
 
-            push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
+                push(@url_list, {id => $item_id, url => $item_url, ts => $ts});
 
-        });
-
+            });
+        }
         unless ($i + 1 == $page_count) {
             sleep $pause;
         }

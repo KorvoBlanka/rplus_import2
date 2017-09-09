@@ -340,30 +340,11 @@ sub parse_adv {
     }
 
     unless ($data->{address}) {
-        my $title = $dom->at('div[class="content column2right-1"]')->at('h1');
+        my $title = $dom->at('div[class="content column2right-1"]')->at('h1')->text;
         $data->{address} = $title;
     }
 
     return $data;
-}
-
-sub _phone_demixer {
-    my ($id, $key) = @_;
-
-    my @parts = $key =~ /[0-9a-f]+/g;
-
-    my $mixed = join '', $id % 2 == 0 ? reverse @parts : @parts;
-    my $s = length $mixed;
-    my $r = '';
-    my $k;
-
-    for($k = 0; $k < $s; ++ $k) {
-        if( $k % 3 == 0 ) {
-            $r .= substr $mixed, $k, 1;
-        }
-    }
-
-    return $r;
 }
 
 sub _parse_date {
@@ -494,7 +475,7 @@ sub _get_type_code {
         }
     }
 
-    return undef;
+    return 'other';
 }
 
 sub _get_house_type_id {

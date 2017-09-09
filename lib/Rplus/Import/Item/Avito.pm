@@ -148,71 +148,78 @@ sub parse_adv {
     ]);
     my $dom = $res->dom;
 
-    my $item_id = $dom->at('span[id="item_id"]')->text;
 
-    # дата
-    my $date_str = trim($dom->at('div[class="item-subtitle"]')->text);
-    if ($date_str =~ /размещено (.+)\. объявление/i) {
-        say $1;
+    my $id_data_str = $dom->at('div[class="title-info-metadata"]')->at('div[class="title-info-metadata-item"]')->text;
+
+    my $item_id;
+    if ($id_data_str =~ /№ (\d+),/i) {
+        $item_id = $1 * 1;
+    }
+
+    if ($id_data_str =~ /размещено (.+)/i) {
         my $dt = _parse_date($1);
         $data->{add_date} = $dt->format_cldr("yyyy-MM-dd'T'HH:mm:ssZ");
     }
 
     # тип недвижимости и тип предложения
-    my $params = lc($dom->find('div[class~="item-params"]')->first->all_text);
-    if ($params =~ /сдам/) {
+    my $breadcrumbs = lc($dom->at('div[class~="b-catalog-breadcrumbs"]')->all_text);
+
+    say $breadcrumbs;
+
+    if ($breadcrumbs =~ /сдам/) {
         $data->{offer_type_code} = 'rent';
-        if ($params =~ /посуточно/) {
+        if ($breadcrumbs =~ /посуточно/) {
             $data->{rent_type} = 'short';
         }
     } else {
         $data->{offer_type_code} = 'sale';
     }
 
-    if ($params =~ /квартир/) {
+    if ($breadcrumbs =~ /квартир/) {
         $data->{type_code} = 'apartment';
-    } elsif ($params =~ /таунхаус/) {
+    } elsif ($breadcrumbs =~ /таунхаус/) {
         $data->{type_code} = 'townhouse';
-    } elsif ($params =~ /малосем/) {
+    } elsif ($breadcrumbs =~ /малосем/) {
         $data->{type_code} = 'apartment_small';
-    } elsif ($params =~ /комнат/) {
+    } elsif ($breadcrumbs =~ /комнат/) {
         $data->{type_code} = 'room';
-    } elsif ($params =~ /дом/) {
+    } elsif ($breadcrumbs =~ /дом/) {
         $data->{type_code} = 'house';
-    } elsif ($params =~ /дач/) {
+    } elsif ($breadcrumbs =~ /дач/) {
         $data->{type_code} = 'dacha';
-    } elsif ($params =~ /коттедж/) {
+    } elsif ($breadcrumbs =~ /коттедж/) {
         $data->{type_code} = 'cottage';
-    } elsif ($params =~ /участок/) {
+    } elsif ($breadcrumbs =~ /участок/) {
         $data->{type_code} = 'land';
-    } elsif ($params =~ /гараж/) {
+    } elsif ($breadcrumbs =~ /гараж/) {
         $data->{type_code} = 'garage';
-    } elsif ($params =~ /торговое помещение/) {
+    } elsif ($breadcrumbs =~ /торговое помещение/) {
         $data->{type_code} = 'market_place';
-    } elsif ($params =~ /магазин/) {
+    } elsif ($breadcrumbs =~ /магазин/) {
         $data->{type_code} = 'market_place';
-    } elsif ($params =~ /павильон/) {
+    } elsif ($breadcrumbs =~ /павильон/) {
         $data->{type_code} = 'market_place';
-    } elsif ($params =~ /офис/) {
+    } elsif ($breadcrumbs =~ /офис/) {
         $data->{type_code} = 'office_place';
-    } elsif ($params =~ /нежилое помещение/) {
+    } elsif ($breadcrumbs =~ /нежилое помещение/) {
         $data->{type_code} = 'gpurpose_place';
-    } elsif ($params =~ /склад/) {
+    } elsif ($breadcrumbs =~ /склад/) {
         $data->{type_code} = 'warehouse_place';
-    } elsif ($params =~ /производственное помещение/) {
+    } elsif ($breadcrumbs =~ /производственное помещение/) {
         $data->{type_code} = 'production_place';
-    } elsif ($params =~ /помещение свободного назначения/) {
+    } elsif ($breadcrumbs =~ /помещение свободного назначения/) {
         $data->{type_code} = 'gpurpose_place';
-    } elsif ($params =~ /помещение/) {
+    } elsif ($breadcrumbs =~ /помещение/) {
         $data->{type_code} = 'gpurpose_place';
     }
 
     # описание
-    my $dsk = $dom->find('div[itemprop="description"]')->first->all_text;
-    $data->{'source_media_text'} = $dsk;
+    if ($dom->at('div[class~="item-description-text"]')) {
+        $data->{'source_media_text'} = $dom->at('div[class~="item-description-text"]')->all_text;
+    }
 
     # заголовок осн. информация
-    my $main_title = $dom->find('h1[itemprop="name"]')->first->text;
+    my $main_title = $dom->at('h1[class="title-info-title"]')->all_text;
     $main_title = trim $main_title;
     given($data->{'type_code'}) {
         when ('room') {
@@ -259,8 +266,7 @@ sub parse_adv {
                 }
                 # wtf
                 default {
-                    say 'unknown realty type!';
-                    next;
+                    say 'bla!';
                 }
             }
 
@@ -293,40 +299,44 @@ sub parse_adv {
     }
 
     # Разделим остальную часть обявления на части и попытаемся вычленить полезную информацию
-    my @bp = map {trim $_} grep { $_ && length($_) > 1 } split /[,()]/, $data->{'source_media_text'};
-    for my $el (@bp) {
-        # Этаж/этажность
-        if ($el =~ /^(\d{1,2})\/(\d{1,2})$/) {
-            if ($2 > $1) {
-                $data->{'floor'} = $1;
-                $data->{'floors_count'} = $2;
+    if ($data->{'source_media_text'}) {
+        my @bp = map {trim $_} grep { $_ && length($_) > 1 } split /[,()]/, $data->{'source_media_text'};
+        for my $el (@bp) {
+            # Этаж/этажность
+            if ($el =~ /^(\d{1,2})\/(\d{1,2})$/) {
+                if ($2 > $1) {
+                    $data->{'floor'} = $1;
+                    $data->{'floors_count'} = $2;
+                }
+                next;
             }
-            next;
-        }
 
-        for my $k (keys %{$META->{'params'}->{'dict'}}) {
-            my %dict = %{$META->{'params'}->{'dict'}->{$k}};
-            my $field = delete $dict{'__field__'};
-            for my $re (keys %dict) {
-                if ($el =~ /$re/i) {
-                    $data->{$field} = $dict{$re};
-                    last;
+            for my $k (keys %{$META->{'params'}->{'dict'}}) {
+                my %dict = %{$META->{'params'}->{'dict'}->{$k}};
+                my $field = delete $dict{'__field__'};
+                for my $re (keys %dict) {
+                    if ($el =~ /$re/i) {
+                        $data->{$field} = $dict{$re};
+                        last;
+                    }
                 }
             }
         }
     }
 
     # цена в рублях, переведем в тыс.
-    my $price = $dom->find('span[itemprop="price"]')->first->all_text;
-    $price =~s/\s//g;
-    if ($price =~ /^(\d{1,}).*?$/) {
-        $data->{'owner_price'} = $1 / 1000;
+    if ($dom->at('span[class="price-value-string"]')) {
+        my $price = $dom->at('span[class="price-value-string"]')->text;
+        $price =~s/\s//g;
+        if ($price =~ /^(\d{1,}).*?$/) {
+            $data->{'owner_price'} = $1 / 1000;
+        }
     }
 
     # адрес
     # нас пункт
-    if ($dom->find('meta[itemprop="addressLocality"]')->first) {
-        $data->{locality} = $dom->find('meta[itemprop="addressLocality"]')->first->attr('content');
+    if ($dom->at('meta[itemprop="addressLocality"]')) {
+        $data->{locality} = $dom->at('meta[itemprop="addressLocality"]')->attr('content');
     }
 
     # адр
@@ -338,7 +348,7 @@ sub parse_adv {
     my $item_phone = '';
     my $pkey = '';
     $dom->find('script')->each(sub{
-        if ($_->all_text =~ /item.phone = '(.+)'/) {
+        if ($_->all_text =~ /item.phone = '(.+?)'/) {
             $item_phone = $1;
         }
     });
@@ -359,7 +369,6 @@ sub parse_adv {
         Referer => $m_url,
         Accept => 'application/json, text/javascript, */*; q=0.01'
     ]);
-
     if ($mr && $mr->json) {
          my $phone_str = $mr->json->{phone};
         for my $x (split /[.,;:]/, $phone_str) {
@@ -368,11 +377,9 @@ sub parse_adv {
     }
     $data->{'owner_phones'} = \@owner_phones;
 
-    if ($dom->find('div[class="description_seller"]')->first->text =~ /Агентство/i ) {   # агенство?
-        my $seller = $dom->find('div[id="seller"] strong[itemprop="name"]')->first->all_text;
-        if ($seller !~ /Частное лицо/) {
-            $data->{mediator_company} = $seller;
-        }
+    my $seller_name = $dom->at('div[class="seller-info-name"]')->text;
+    if ($seller_name !~ /частное лицо/i) {
+        $data->{mediator_company} = $seller_name;
     }
 
     # вытащим фото

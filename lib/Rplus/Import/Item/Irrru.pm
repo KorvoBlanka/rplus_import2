@@ -376,7 +376,7 @@ sub _parse_date {
     say $date;
 
     my $res;
-    my $dt_now = DateTime->now();
+    my $dt_now = DateTime->now(time_zone => $media_data->{timezone});
     my $year = $dt_now->year();
     my $mon = $dt_now->month();
     my $mday = $dt_now->mday();
@@ -393,6 +393,8 @@ sub _parse_date {
     } else {
         $res = $dt_now;
     }
+
+    $res->set_time_zone($media_data->{timezone});
 
     return $res;
 }
